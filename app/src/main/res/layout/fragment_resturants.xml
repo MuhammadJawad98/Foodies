@@ -6,6 +6,12 @@
     android:layout_marginTop="?attr/actionBarSize"
     tools:context=".fragments.RestaurantsFragment">
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_gravity="center"
+        android:id="@+id/progressbar_id"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/restaurantRecyclerview_id"
         android:layout_width="match_parent"

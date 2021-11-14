@@ -13,6 +13,8 @@ import com.devexpert.forfoodiesbyfoodies.activities.DashBoardActivity;
 import com.devexpert.forfoodiesbyfoodies.activities.LoginActivity;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreen extends AppCompatActivity {
     Handler handler;
@@ -22,11 +24,11 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         runAnimation();
-        String userId = FireStore.getCurrentUserUUid();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         handler = new Handler();
         handler.postDelayed(() -> {
             Intent intent;
-            if (userId.isEmpty()) {
+            if (user == null) {
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
             } else {
                 intent = new Intent(getApplicationContext(), DashBoardActivity.class);

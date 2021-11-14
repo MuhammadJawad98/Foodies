@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
@@ -29,8 +30,9 @@ import java.util.List;
 public class RestaurantsFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
     private static final String ARG_PARAM1 = "";
     private static final String ARG_PARAM2 = "";
-    RecyclerViewAdapter adapter;
-    List<Restaurant> restaurantList = new ArrayList<>();
+    private RecyclerViewAdapter adapter;
+    private List<Restaurant> restaurantList = new ArrayList<>();
+    private ProgressBar progressBar;
 
     public RestaurantsFragment() {
         // Required empty public constructor
@@ -61,9 +63,12 @@ public class RestaurantsFragment extends Fragment implements RecyclerViewAdapter
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_resturants, container, false);
+        progressBar = view.findViewById(R.id.progressbar_id);
+
         FireStore.getRestaurantFromFirebase(getContext(), list -> {
             restaurantList.clear();
             restaurantList = list;
+            progressBar.setVisibility(View.GONE);
             RecyclerView recyclerView = view.findViewById(R.id.restaurantRecyclerview_id);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             adapter = new RecyclerViewAdapter(getContext(), restaurantList);

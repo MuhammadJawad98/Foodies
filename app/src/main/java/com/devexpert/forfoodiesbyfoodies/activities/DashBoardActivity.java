@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
+import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;

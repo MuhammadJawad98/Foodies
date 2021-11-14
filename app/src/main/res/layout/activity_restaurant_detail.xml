@@ -18,6 +18,14 @@
         android:contentDescription="@string/restaurants" />
 
     <TextView
+        android:id="@+id/restaurantNameTextView_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
+
+    <TextView
         android:id="@+id/restaurantDescriptionTextView_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

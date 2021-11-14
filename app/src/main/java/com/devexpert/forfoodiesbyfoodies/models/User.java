@@ -1,13 +1,16 @@
 package com.devexpert.forfoodiesbyfoodies.models;
 
 public class User {
-    String firstName;
-    String lastName;
-    String email;
-    String userId;
-    boolean isUser;
-    boolean isCritic;
-    boolean isAdmin;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String userId;
+    private boolean isUser;
+    private boolean isCritic;
+    private boolean isAdmin;
+
+    public User() {
+    }
 
     public User(String firstName, String lastName, String email, String userId, boolean isUser, boolean isCritic, boolean isAdmin) {
         this.firstName = firstName;

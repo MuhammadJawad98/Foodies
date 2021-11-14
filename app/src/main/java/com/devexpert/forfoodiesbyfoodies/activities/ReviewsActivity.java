@@ -1,0 +1,96 @@
+package com.devexpert.forfoodiesbyfoodies.activities;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
+import com.devexpert.forfoodiesbyfoodies.adapters.ReviewRecyclerviewAdapter;
+import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
+import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
+import com.devexpert.forfoodiesbyfoodies.models.Review;
+import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReviewsActivity extends AppCompatActivity implements ReviewRecyclerviewAdapter.ItemClickListener {
+    ReviewRecyclerviewAdapter adapter;
+    private TextView ratingTv;
+    private TextView ratingPeoplesTv;
+    private RatingBar ratingBar;
+    private Restaurant restaurant;
+    RecyclerView recyclerView;
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reviews);
+        initView();
+
+        Intent intent = getIntent();
+        restaurant = (Restaurant) intent.getSerializableExtra("details");
+        Log.d("===>>>", restaurant.getRestaurantName() + "");
+
+        FireStore.getReviews(restaurant.getId(), reviewList -> {
+
+            System.out.println("=================================");
+
+
+
+            float rating = 0;
+            if (reviewList.size() == 0) {
+
+            } else {
+                for (int i = 0; i < reviewList.size(); i++) {
+                    rating = (float) (rating + reviewList.get(i).getRating());
+                }
+                rating = rating / reviewList.size();
+
+            }
+
+            ratingTv.setText(rating + "");
+            ratingPeoplesTv.setText("From " + reviewList.size() + " people");
+            ratingBar.setRating(rating);
+
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList);
+            //add ItemDecoration
+            recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
+                    DividerItemDecoration.VERTICAL));
+//        adapter.setClickListener(this);
+            recyclerView.setAdapter(adapter);
+
+        });
+
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        System.out.println("*****************************");
+        CustomDialogClass cdd = new CustomDialogClass(this, restaurant.getId());
+        cdd.show();
+    }
+
+    void initView(){
+        ratingTv = findViewById(R.id.ratingTv_id);
+        ratingPeoplesTv = findViewById(R.id.ratingPeopleTv_id);
+        ratingBar = findViewById(R.id.ratingBar);
+        recyclerView = findViewById(R.id.reviewRecyclerview_id);
+
+    }
+}
