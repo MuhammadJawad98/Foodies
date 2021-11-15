@@ -47,13 +47,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Picasso.get().load(restaurant.getRestaurantImageUrl()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.restaurantImageView);
-        holder.detailsViewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(context, RestaurantDetailActivity.class);
-                intent.putExtra("details",restaurant);
-                context.startActivity(intent);
-            }
+        holder.detailsViewButton.setOnClickListener(view -> {
+            Intent intent=new Intent(context, RestaurantDetailActivity.class);
+            intent.putExtra("details",restaurant);
+            context.startActivity(intent);
         });
     }
 

@@ -23,6 +23,8 @@
     android:layout_height="wrap_content"
     android:max="5"
     android:id="@+id/ratingBar"
+    android:progressTint="@color/golden"
+    android:progressBackgroundTint="@color/grey"
     />
     <LinearLayout
         android:layout_width="wrap_content"

@@ -36,7 +36,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             @Override
             public void onComplete(User users) {
                 user = users;
-                System.out.println("######1##" + user.getFirstName() + user.isUser());
+                System.out.println("######1##" + user.getFirstName() +"  " +user.isUser());
 //                if (user.isAdmin()) {
 //                    Log.d("is user::: ", user.isUser() + "");
 //                    btnAddReview.setVisibility(View.VISIBLE);

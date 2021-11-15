@@ -48,7 +48,16 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         Review review = mData.get(position);
         holder.nameTv.setText(review.getName());
         holder.commentTv.setText(review.getComment());
-        holder.ratingBar.setRating((float) review.getRating());
+        float value = 0;
+//        if (review.getReviewRating().size() > 0) {
+//            for (int i = 0; i < review.getReviewRating().size(); i++) {
+//                value = value + (float) review.getReviewRating().get(i);
+//                System.out.println("$$$$$$$$$" + value);
+//
+//            }
+//        }
+
+        holder.ratingBar.setRating(value);
     }
 
     // total number of rows

@@ -9,6 +9,12 @@ public class Review implements Serializable {
     private String comment;
     private double rating;
 
+    public Review(String name, String id, String userId, String comment) {
+        this.name = name;
+        this.id = id;
+        this.userId = userId;
+        this.comment = comment;
+    }
 
     public Review(String name, String id, String userId, String comment, double rating) {
         this.name = name;

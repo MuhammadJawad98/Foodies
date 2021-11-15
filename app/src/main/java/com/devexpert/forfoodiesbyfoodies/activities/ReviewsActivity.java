@@ -33,6 +33,8 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
     private RatingBar ratingBar;
     private Restaurant restaurant;
     RecyclerView recyclerView;
+    List<Review> list = new ArrayList();
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +44,11 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
         Intent intent = getIntent();
         restaurant = (Restaurant) intent.getSerializableExtra("details");
-        Log.d("===>>>", restaurant.getRestaurantName() + "");
 
         FireStore.getReviews(restaurant.getId(), reviewList -> {
-
-            System.out.println("=================================");
-
-
-
+            list = reviewList;
             float rating = 0;
-            if (reviewList.size() == 0) {
-
-            } else {
+            if (reviewList.size() != 0) {
                 for (int i = 0; i < reviewList.size(); i++) {
                     rating = (float) (rating + reviewList.get(i).getRating());
                 }
@@ -65,13 +60,13 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             ratingPeoplesTv.setText("From " + reviewList.size() + " people");
             ratingBar.setRating(rating);
 
-
+//            System.out.println("^^^^^^^^^^^^^^^"+reviewList.get(0).getReviewRating().size());
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList);
             //add ItemDecoration
             recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
                     DividerItemDecoration.VERTICAL));
-//        adapter.setClickListener(this);
+            adapter.setClickListener(this);
             recyclerView.setAdapter(adapter);
 
         });
@@ -81,12 +76,12 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
     @Override
     public void onItemClick(View view, int position) {
-        System.out.println("*****************************");
-        CustomDialogClass cdd = new CustomDialogClass(this, restaurant.getId());
+        System.out.println(list.get(position).getId()+"*****************************"+restaurant.getId());
+        CustomDialogClass cdd = new CustomDialogClass(this, list.get(position).getId(), restaurant.getId());
         cdd.show();
     }
 
-    void initView(){
+    void initView() {
         ratingTv = findViewById(R.id.ratingTv_id);
         ratingPeoplesTv = findViewById(R.id.ratingPeopleTv_id);
         ratingBar = findViewById(R.id.ratingBar);
