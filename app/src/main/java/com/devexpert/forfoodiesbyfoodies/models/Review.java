@@ -1,6 +1,7 @@
 package com.devexpert.forfoodiesbyfoodies.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Review implements Serializable {
     private String name;
@@ -8,6 +9,7 @@ public class Review implements Serializable {
     private String userId;
     private String comment;
     private double rating;
+    private List reviewRatingList;
 
     public Review(String name, String id, String userId, String comment) {
         this.name = name;
@@ -22,6 +24,15 @@ public class Review implements Serializable {
         this.userId = userId;
         this.comment = comment;
         this.rating = rating;
+    }
+
+    public Review(String name, String id, String userId, String comment, double rating, List reviewRatingList) {
+        this.name = name;
+        this.id = id;
+        this.userId = userId;
+        this.comment = comment;
+        this.rating = rating;
+        this.reviewRatingList = reviewRatingList;
     }
 
     public String getName() {
@@ -62,5 +73,13 @@ public class Review implements Serializable {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public List getReviewRatingList() {
+        return reviewRatingList;
+    }
+
+    public void setReviewRatingList(List reviewRatingList) {
+        this.reviewRatingList = reviewRatingList;
     }
 }

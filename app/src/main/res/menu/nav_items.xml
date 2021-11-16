@@ -3,16 +3,16 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/first"
-            android:icon="@drawable/ic_launcher_foreground"
+            android:id="@+id/restaurantFragment_id"
+            android:icon="@drawable/ic_baseline_add_24"
             android:title="Restaurants" />
         <item
-            android:id="@+id/second"
-            android:icon="@drawable/ic_launcher_foreground"
+            android:id="@+id/profileFragment_id"
+            android:icon="@drawable/ic_baseline_add_24"
             android:title="Profile" />
         <item
-            android:id="@+id/third"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Third Menu" />
+            android:id="@+id/streetFoodFragment_id"
+            android:icon="@drawable/ic_baseline_add_24"
+            android:title="Street Food" />
     </group>
 </menu>

@@ -14,8 +14,10 @@ import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
+import com.devexpert.forfoodiesbyfoodies.interfaces.StreetFoodResult;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
+import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -105,7 +107,6 @@ public class FireStore {
                 (value, error) -> {
                     if (value != null) {
                         List<Review> reviewList = new ArrayList<>();
-                        List ratingList = new ArrayList<>();
 
                         Log.d(">>>>>>>>>>>>>>", value.getDocuments().size() + "");
                         value.getDocuments().forEach(documentSnapshot -> {
@@ -115,32 +116,23 @@ public class FireStore {
                                 String reviewId = documentSnapshot.getId();
                                 String reviewComment = documentSnapshot.getData().get("comment").toString();
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
-
-
-                                //-----------------------------------------------------------
-//                                db.collection("restaurants").document(documentId).collection("reviews").document(reviewId).collection("rating").addSnapshotListener(new EventListener<QuerySnapshot>() {
-//                                    @RequiresApi(api = Build.VERSION_CODES.N)
-//                                    @Override
-//                                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                                        if (value != null) {
-//                                            value.getDocuments().forEach(documentSnapshot1 -> {
-//                                                ratingList.add(documentSnapshot1.get("rating"));
-//                                                System.out.println("####========>" + documentSnapshot1.get("rating"));
-//                                            });
-//                                        } else {
-//                                            System.out.println("Error >>>>>> null document");
-//                                        }
-//                                    }
-//                                });
-                                //----------------------------------------------------------
-
-                                getReviewsRating(documentId, reviewId, reviewList1 -> {
-                                    System.out.println("***************************************** rating");
-                                    System.out.println(ratingList.size());
-                                    System.out.println("***************************************** rating");
-
-                                });
-                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, rating);
+                                List ratingList = new ArrayList<>();
+                                try {
+                                    documentSnapshot.getReference().collection("rating").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                            System.out.println("####========>" + value.getDocuments().size());
+                                            value.getDocuments().forEach(documentSnapshot1 -> {
+                                                ratingList.add(documentSnapshot1.get("rating"));
+                                                System.out.println("####========>" + documentSnapshot1.get("rating"));
+                                            });
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    System.out.println("Error 2::::::::" + e.getMessage());
+                                }
+                                System.out.println("list length>>>>>>>>>>>>>>" + ratingList.size());
+                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, rating, ratingList);
                                 reviewList.add(review);
                             } catch (Exception e) {
                                 Log.d(">>>>>Error>>>>>>>>>", e.getMessage());
@@ -201,33 +193,54 @@ public class FireStore {
         });
     }
 
-    public static void getReviewsRating(String documentId, String reviewId, Result result) {
+    public static void getStreetFoodData(StreetFoodResult result) {
 
-        db.collection("restaurants").document(documentId).collection("reviews").document(reviewId).collection("rating").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        List<StreetFood> foodList = new ArrayList<>();
+        db.collection("street_food").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (value != null) {
-                    List ratingList = new ArrayList();
+                value.getDocuments().forEach(documentSnapshot -> {
+                    StreetFood streetFood = new StreetFood();
+                    streetFood.setDescription(documentSnapshot.get("description").toString());
+                    streetFood.setLocation(documentSnapshot.get("location").toString());
+                    streetFood.setName(documentSnapshot.get("name").toString());
+                    streetFood.setPicture(documentSnapshot.get("picture").toString());
+                    streetFood.setType(documentSnapshot.get("type").toString());
+                    streetFood.setUserId(documentSnapshot.get("userId").toString());
+                    foodList.add(streetFood);
+                });
+                result.onComplete(foodList);
 
-                    value.getDocuments().forEach(documentSnapshot1 -> {
-                        ratingList.add(documentSnapshot1.get("rating"));
-                        System.out.println("####========>" + documentSnapshot1.get("rating"));
-                    });
-                    System.out.println("$$$$$$$$$$$$$$$$$"+ratingList.size());
+            }
+        });
+    }
 
-                    result.onComplete(ratingList);
+    public static void addStreetFoodStall(StreetFood streetFood, Context context) {
+        db.collection("street_food").whereEqualTo("name", "Burger Point").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
+                if (value.getDocuments().size() > 0) {
+                    //already exist
+                    CommonFunctions.showToast("Already Exists", context);
                 } else {
-//                    result.onComplete();
-
-                    System.out.println("Error >>>>>> null document");
+                    db.collection("street_food").add(streetFood).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d("TAG", "Data save to db: " + documentReference.getId());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("TAG", "Error while adding street food");
+                        }
+                    });
                 }
             }
         });
     }
-}
-
-interface Result {
-    void onComplete(List reviewList);
 
 }
+
