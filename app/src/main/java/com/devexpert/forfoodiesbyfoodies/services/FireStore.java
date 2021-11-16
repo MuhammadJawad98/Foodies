@@ -3,14 +3,9 @@ package com.devexpert.forfoodiesbyfoodies.services;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Adapter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
@@ -20,48 +15,26 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class FireStore {
-    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public static void addUserToFireStore(User user) {
         // Add a new document with a generated ID
         db.collection("users")
                 .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("TAG", "Data save to db: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("TAG", "Error adding document", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Log.d("TAG", "Data save to db: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
     }
 
     public static void getRestaurantFromFirebase(Context context, FirebaseResultListener callback) {
@@ -73,35 +46,26 @@ public class FireStore {
                     } else {
                         Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
                         for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
-                            // Convert the whole Query Snapshot to a list
-                            // of objects directly! No need to fetch each
-                            // document.
                             String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
                             String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
                             String name = documentChange.getDocument().getData().get("restaurantName").toString();
                             String id = documentChange.getDocument().getData().get("id").toString();
-//                            List<Review> reviewsList = new ArrayList<>();
 
                             Log.d("Restaurants details: ", documentChange.getDocument().getId());
                             Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
-                            // Add all to your list
                             restaurantList.add(restaurant);
                         }
                         callback.onComplete(restaurantList);
                         Log.d("FireStore Data:", "onSuccess: " + restaurantList.toString());
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                callback.onComplete(restaurantList);
-                CommonFunctions.showToast("Error while fetching data.", context);
-            }
+                }).addOnFailureListener(e -> {
+            callback.onComplete(restaurantList);
+            CommonFunctions.showToast("Error while fetching data.", context);
         });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void getReviews(String documentId, RestaurantReviewResult restaurantReviewResult) {
-//        System.out.println(">>>>>> id:" + db.collection("restaurants").document(id).collection("reviews").getPath());
 
         db.collection("restaurants").document(documentId).collection("reviews").addSnapshotListener(
                 (value, error) -> {
@@ -118,15 +82,12 @@ public class FireStore {
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
                                 List ratingList = new ArrayList<>();
                                 try {
-                                    documentSnapshot.getReference().collection("rating").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                            System.out.println("####========>" + value.getDocuments().size());
-                                            value.getDocuments().forEach(documentSnapshot1 -> {
-                                                ratingList.add(documentSnapshot1.get("rating"));
-                                                System.out.println("####========>" + documentSnapshot1.get("rating"));
-                                            });
-                                        }
+                                    documentSnapshot.getReference().collection("rating").addSnapshotListener((value1, error1) -> {
+                                        System.out.println("####========>" + value1.getDocuments().size());
+                                        value1.getDocuments().forEach(documentSnapshot1 -> {
+                                            ratingList.add(documentSnapshot1.get("rating"));
+                                            System.out.println("####========>" + documentSnapshot1.get("rating"));
+                                        });
                                     });
                                 } catch (Exception e) {
                                     System.out.println("Error 2::::::::" + e.getMessage());
@@ -180,64 +141,36 @@ public class FireStore {
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userId);
         data.put("rating", rating);
-        db.collection("restaurants").document(restaurantId).collection("reviews").document(reviewId).collection("rating").document().set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("TAG", "DocumentSnapshot successfully written!");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("TAG", "Error writing document", e);
-            }
-        });
+        db.collection("restaurants").document(restaurantId).collection("reviews").document(reviewId).collection("rating").document().set(data).addOnSuccessListener(aVoid -> Log.d("TAG", "DocumentSnapshot successfully written!")).addOnFailureListener(e -> Log.w("TAG", "Error writing document", e));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void getStreetFoodData(StreetFoodResult result) {
-
-
         List<StreetFood> foodList = new ArrayList<>();
-        db.collection("street_food").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                value.getDocuments().forEach(documentSnapshot -> {
-                    StreetFood streetFood = new StreetFood();
-                    streetFood.setDescription(documentSnapshot.get("description").toString());
-                    streetFood.setLocation(documentSnapshot.get("location").toString());
-                    streetFood.setName(documentSnapshot.get("name").toString());
-                    streetFood.setPicture(documentSnapshot.get("picture").toString());
-                    streetFood.setType(documentSnapshot.get("type").toString());
-                    streetFood.setUserId(documentSnapshot.get("userId").toString());
-                    foodList.add(streetFood);
-                });
-                result.onComplete(foodList);
+        db.collection("street_food").addSnapshotListener((value, error) -> {
+            value.getDocuments().forEach(documentSnapshot -> {
+                StreetFood streetFood = new StreetFood();
+                streetFood.setDescription(documentSnapshot.get("description").toString());
+                streetFood.setLocation(documentSnapshot.get("location").toString());
+                streetFood.setName(documentSnapshot.get("name").toString());
+                streetFood.setPicture(documentSnapshot.get("picture").toString());
+                streetFood.setType(documentSnapshot.get("type").toString());
+                streetFood.setUserId(documentSnapshot.get("userId").toString());
+                foodList.add(streetFood);
+            });
+            result.onComplete(foodList);
 
-            }
         });
     }
 
     public static void addStreetFoodStall(StreetFood streetFood, Context context) {
-        db.collection("street_food").whereEqualTo("name", "Burger Point").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
-                if (value.getDocuments().size() > 0) {
-                    //already exist
-                    CommonFunctions.showToast("Already Exists", context);
-                } else {
-                    db.collection("street_food").add(streetFood).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d("TAG", "Data save to db: " + documentReference.getId());
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("TAG", "Error while adding street food");
-                        }
-                    });
-                }
+        db.collection("street_food").whereEqualTo("name", "Burger Point").addSnapshotListener((value, error) -> {
+            System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
+            if (value.getDocuments().size() > 0) {
+                //already exist
+                CommonFunctions.showToast("Already Exists", context);
+            } else {
+                db.collection("street_food").add(streetFood).addOnSuccessListener(documentReference -> Log.d("TAG", "Data save to db: " + documentReference.getId())).addOnFailureListener(e -> Log.d("TAG", "Error while adding street food"));
             }
         });
     }
