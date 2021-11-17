@@ -33,5 +33,12 @@
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
     <string name="add_your_rating">Add your rating!</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="no_vegetarian">No-Vegetarian</string>
+    <string name="user_name">User Name</string>
+    <string name="submit">Submit</string>
 
 </resources>

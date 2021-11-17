@@ -11,7 +11,7 @@ public class StreetFood {
     public StreetFood() {
     }
 
-    public StreetFood(String description, String location, String name, String picture, String type, String userId) {
+    public StreetFood(String name,String description, String location,  String picture, String type, String userId) {
         this.description = description;
         this.location = location;
         this.name = name;

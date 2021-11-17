@@ -7,6 +7,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public class DashBoardActivity extends AppCompatActivity {
     DrawerLayout dLayout;
     TextView textViewName;
-    String name="";
+    String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +38,13 @@ public class DashBoardActivity extends AppCompatActivity {
             @Override
             public void onComplete(User user) {
 //                name=user.getFirstName();
+
                 if (user.getFirstName().isEmpty()) {
                     textViewName.setText("User name");
 
                 } else {
-                    System.out.println("!@!@!@!@!@!@!@"+user.getFirstName());
-                    textViewName.setText(user.getFirstName()+" "+user.getLastName());
+                    System.out.println("!@!@!@!@!@!@!@" + user.getFirstName());
+                    textViewName.setText(user.getFirstName() + " " + user.getLastName());
 
                 }
             }

@@ -158,13 +158,14 @@ public class FireStore {
                 streetFood.setUserId(documentSnapshot.get("userId").toString());
                 foodList.add(streetFood);
             });
+            System.out.println("=======> food list" + foodList.size());
             result.onComplete(foodList);
 
         });
     }
 
     public static void addStreetFoodStall(StreetFood streetFood, Context context) {
-        db.collection("street_food").whereEqualTo("name", "Burger Point").addSnapshotListener((value, error) -> {
+        db.collection("street_food").whereEqualTo("name", streetFood.getName()).addSnapshotListener((value, error) -> {
             System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
             if (value.getDocuments().size() > 0) {
                 //already exist
