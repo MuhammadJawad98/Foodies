@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
+import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.StreetFoodResult;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FireStore {
-    static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public static void addUserToFireStore(User user) {
         // Add a new document with a generated ID
@@ -148,7 +149,9 @@ public class FireStore {
     public static void getStreetFoodData(StreetFoodResult result) {
         List<StreetFood> foodList = new ArrayList<>();
         db.collection("street_food").addSnapshotListener((value, error) -> {
+            foodList.clear();
             value.getDocuments().forEach(documentSnapshot -> {
+                System.out.println("*************************************************" + value.getDocuments().size());
                 StreetFood streetFood = new StreetFood();
                 streetFood.setDescription(documentSnapshot.get("description").toString());
                 streetFood.setLocation(documentSnapshot.get("location").toString());
@@ -156,6 +159,7 @@ public class FireStore {
                 streetFood.setPicture(documentSnapshot.get("picture").toString());
                 streetFood.setType(documentSnapshot.get("type").toString());
                 streetFood.setUserId(documentSnapshot.get("userId").toString());
+                streetFood.setId(documentSnapshot.getId());
                 foodList.add(streetFood);
             });
             System.out.println("=======> food list" + foodList.size());
@@ -164,16 +168,16 @@ public class FireStore {
         });
     }
 
-    public static void addStreetFoodStall(StreetFood streetFood, Context context) {
-        db.collection("street_food").whereEqualTo("name", streetFood.getName()).addSnapshotListener((value, error) -> {
-            System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
-            if (value.getDocuments().size() > 0) {
-                //already exist
-                CommonFunctions.showToast("Already Exists", context);
-            } else {
-                db.collection("street_food").add(streetFood).addOnSuccessListener(documentReference -> Log.d("TAG", "Data save to db: " + documentReference.getId())).addOnFailureListener(e -> Log.d("TAG", "Error while adding street food"));
-            }
-        });
+    public static void addStreetFoodStall(StreetFood streetFood, OnResult onResult) {
+        db.collection("street_food").add(streetFood).addOnSuccessListener(documentReference ->
+        {
+            Log.d("TAG", "Data save to db: " + documentReference.getId());
+            onResult.onComplete();
+        }).
+                addOnFailureListener(e -> {
+                    Log.d("TAG", "Error while adding street food");
+                    onResult.onFailure();
+                });
     }
 
 }

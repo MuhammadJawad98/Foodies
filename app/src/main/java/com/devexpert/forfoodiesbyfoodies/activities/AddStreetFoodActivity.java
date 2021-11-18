@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
@@ -116,8 +118,16 @@ public class AddStreetFoodActivity extends AppCompatActivity {
             return;
         }
 
+        FireStore.db.collection("street_food").whereEqualTo("name", name).addSnapshotListener((value, error) -> {
+//            System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
+            if (value.getDocuments().size() > 0) {
+                Toast.makeText(getApplicationContext(), "Already exist", Toast.LENGTH_SHORT).show();
 
-        uploadImage(name, description, location);
+            } else {
+                uploadImage(name, description, location);
+
+            }
+        });
     }
 
     @Override
@@ -136,7 +146,6 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                 imageView.setImageBitmap(selectedImage);
                 imagePath = uri.getPath();
                 imageUri = uri;
-//                File file = FileUtil.from(currentActivity, uri);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -155,12 +164,35 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            if (taskSnapshot.getMetadata() != null) {
+                                if (taskSnapshot.getMetadata().getReference() != null) {
+                                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String imageUrl = uri.toString();
 
-                            System.out.println("image Upload" + taskSnapshot.getStorage().getDownloadUrl().toString());
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                            StreetFood streetFood = new StreetFood(name, description, location, taskSnapshot.getStorage().getDownloadUrl().toString(), foodType, userId);
-                            FireStore.addStreetFoodStall(streetFood, getApplicationContext());
+                                            System.out.println("image Upload" + imageUrl);
+                                            progressDialog.dismiss();
+//                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                                            StreetFood streetFood = new StreetFood(name, description, location, imageUrl, foodType, userId);
+                                            FireStore.addStreetFoodStall(streetFood, new OnResult() {
+                                                @Override
+                                                public void onComplete() {
+                                                    finish();
+                                                }
+
+                                                @Override
+                                                public void onFailure() {
+                                                    Toast.makeText(getApplicationContext(), "Error while uploading data", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

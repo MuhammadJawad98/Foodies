@@ -1,4 +1,4 @@
-package com.devexpert.forfoodiesbyfoodies.fragments;
+    package com.devexpert.forfoodiesbyfoodies.fragments;
 
 import android.content.Intent;
 import android.os.Build;
@@ -16,9 +16,12 @@ import android.widget.ProgressBar;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.AddStreetFoodActivity;
+import com.devexpert.forfoodiesbyfoodies.activities.RestaurantDetailActivity;
 import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
+import com.devexpert.forfoodiesbyfoodies.adapters.ReviewRecyclerviewAdapter;
 import com.devexpert.forfoodiesbyfoodies.adapters.StreetFoodRecyclerviewAdapter;
 import com.devexpert.forfoodiesbyfoodies.interfaces.StreetFoodResult;
+import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,11 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StreetFoodFragment extends Fragment {
+public class StreetFoodFragment extends Fragment  {
     //    private List<StreetFood> streetFoodList = new ArrayList<>();
     private StreetFoodRecyclerviewAdapter adapter;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
+    private List<StreetFood> list;
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -78,9 +82,11 @@ public class StreetFoodFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         FireStore.getStreetFoodData(streetFoods -> {
             try {
+
+                list = streetFoods;
                 progressBar.setVisibility(View.GONE);
-                System.out.println(">>>>>>>>>>>>>>> food: " + streetFoods.size());
-                adapter = new StreetFoodRecyclerviewAdapter(getContext(), streetFoods);
+                System.out.println(">>>>>>>>>>>>>>> food: " + list.size());
+                adapter = new StreetFoodRecyclerviewAdapter(getContext(), list);
 //        adapter.setClickListener(this);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();

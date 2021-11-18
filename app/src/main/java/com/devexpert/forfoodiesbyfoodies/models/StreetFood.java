@@ -7,17 +7,36 @@ public class StreetFood {
     String picture;
     String type;
     String userId;
+    String id;
 
     public StreetFood() {
     }
 
-    public StreetFood(String name,String description, String location,  String picture, String type, String userId) {
+    public StreetFood(String description, String location, String name, String picture, String type, String userId, String id) {
         this.description = description;
         this.location = location;
         this.name = name;
         this.picture = picture;
         this.type = type;
         this.userId = userId;
+        this.id = id;
+    }
+
+    public StreetFood(String name, String description, String location, String picture, String type, String userId) {
+        this.description = description;
+        this.location = location;
+        this.name = name;
+        this.picture = picture;
+        this.type = type;
+        this.userId = userId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDescription() {
