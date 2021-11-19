@@ -11,10 +11,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.fragments.ProfileFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
@@ -22,31 +24,32 @@ import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
 public class DashBoardActivity extends AppCompatActivity {
     DrawerLayout dLayout;
     TextView textViewName;
+    ImageView imageView;
     String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        FireStore.getData(new FirebaseUserDataResult() {
-            @Override
-            public void onComplete(User user) {
+        FireStore.getData(user -> {
 //                name=user.getFirstName();
 
-                if (user.getFirstName().isEmpty()) {
-                    textViewName.setText("User name");
+            if (user.getFirstName().isEmpty()) {
+                textViewName.setText("User name");
 
-                } else {
-                    System.out.println("!@!@!@!@!@!@!@" + user.getFirstName());
-                    textViewName.setText(user.getFirstName() + " " + user.getLastName());
-
-                }
+            } else {
+                System.out.println("!@!@!@!@!@!@!@" + user.getFirstName());
+                textViewName.setText(user.getFirstName() + " " + user.getLastName());
+                Picasso.get().load(user.getImageUrl()).fit().centerCrop().
+                        placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.error_image).into(imageView);
             }
         });
         setNavigationDrawer(); // call method
@@ -67,6 +70,7 @@ public class DashBoardActivity extends AppCompatActivity {
         NavigationView navView = findViewById(R.id.navigation); // initiate a Navigation View
         View headerView = navView.getHeaderView(0);
         textViewName = headerView.findViewById(R.id.name);
+        imageView = headerView.findViewById(R.id.profile_image);
 
         loadFragment(new RestaurantsFragment());
 
@@ -78,7 +82,7 @@ public class DashBoardActivity extends AppCompatActivity {
             if (itemId == R.id.restaurantFragment_id) {
                 frag = new RestaurantsFragment();
             } else if (itemId == R.id.profileFragment_id) {
-                frag = new RestaurantsFragment();
+                frag = new ProfileFragment();
             } else if (itemId == R.id.streetFoodFragment_id) {
                 frag = new StreetFoodFragment();
             }

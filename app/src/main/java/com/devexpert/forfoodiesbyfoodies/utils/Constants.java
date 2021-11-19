@@ -5,4 +5,5 @@ public class Constants {
     public static String vegetarian = "Vegetarian";
     public static String no_vegetarian = "No-Vegetarian";
     public static final String userID = "userId";
+    public static String defaultImageUrl = "https://ogoulmeeting.com/images/system/default_user_picture.jpg" ;
 }

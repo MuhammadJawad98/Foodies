@@ -1,17 +1,15 @@
 package com.devexpert.forfoodiesbyfoodies.activities;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,20 +17,14 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.interfaces.ImageUploadResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.InputStream;
-import java.util.UUID;
 
 public class AddStreetFoodActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -45,8 +37,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
     private String userId = "";
     private Uri imageUri;
     //Firebase
-    FirebaseStorage storage;
-    StorageReference storageReference;
+    private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 
     @Override
@@ -54,24 +45,39 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_street_food);
         initView();
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-
         userId = FireStore.getCurrentUserUUid();
-        System.out.println("+++++++++++" + userId);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitData();
-            }
-        });
+        System.out.println("userId::: " + userId);
+        btnSubmit.setOnClickListener(view -> submitData());
         imageView.setOnClickListener(view -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Tack Image"), PICK_IMAGE);
+            someActivityResultLauncher.launch(intent);
         });
-
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        if (data == null) {
+                            //error
+                            return;
+                        }
+                        try {
+                            Uri uri = data.getData();
+                            System.out.println(data.getData() + "::::::::::::" + uri.getPath());
+                            final InputStream imageStream = getContentResolver().openInputStream(uri);
+                            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                            imageView.setImageBitmap(selectedImage);
+                            imagePath = uri.getPath();
+                            imageUri = uri;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioVege:
@@ -81,7 +87,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                     foodType = Constants.no_vegetarian;
                     break;
             }
-            System.out.println("??????" + foodType);
+            System.out.println("foodType: " + foodType);
         });
 
     }
@@ -154,59 +160,28 @@ public class AddStreetFoodActivity extends AppCompatActivity {
 
     private void uploadImage(String name, String description, String location) {
 
-        if (imagePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
+        CommonFunctions.uploadImage(imagePath, getApplicationContext(), imageUri, new ImageUploadResult() {
+            @Override
+            public void onUploadSuccess(String imageUrl) {
+                StreetFood streetFood = new StreetFood(name, description, location, imageUrl, foodType, userId);
+                FireStore.addStreetFoodStall(streetFood, new OnResult() {
+                    @Override
+                    public void onComplete() {
+                        finish();
+                    }
 
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            ref.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            if (taskSnapshot.getMetadata() != null) {
-                                if (taskSnapshot.getMetadata().getReference() != null) {
-                                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
-                                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            String imageUrl = uri.toString();
+                    @Override
+                    public void onFailure() {
+                        Toast.makeText(getApplicationContext(), "Error while uploading data", Toast.LENGTH_SHORT).show();
 
-                                            System.out.println("image Upload" + imageUrl);
-                                            progressDialog.dismiss();
-//                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                                            StreetFood streetFood = new StreetFood(name, description, location, imageUrl, foodType, userId);
-                                            FireStore.addStreetFoodStall(streetFood, new OnResult() {
-                                                @Override
-                                                public void onComplete() {
-                                                    finish();
-                                                }
+                    }
+                });
+            }
 
-                                                @Override
-                                                public void onFailure() {
-                                                    Toast.makeText(getApplicationContext(), "Error while uploading data", Toast.LENGTH_SHORT).show();
-
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(taskSnapshot -> {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                .getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                    });
-        }
+            @Override
+            public void onUploadFailure() {
+                CommonFunctions.showToast("Error while uploading image", getApplicationContext());
+            }
+        });
     }
 }

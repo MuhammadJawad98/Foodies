@@ -5,6 +5,9 @@ public class User {
     private String lastName;
     private String email;
     private String userId;
+    private String password;
+    private String imageUrl;
+    private String documentId;
     private boolean isUser;
     private boolean isCritic;
     private boolean isAdmin;
@@ -20,6 +23,55 @@ public class User {
         this.isUser = isUser;
         this.isCritic = isCritic;
         this.isAdmin = isAdmin;
+    }
+
+    public User(String firstName, String lastName, String email, String userId, String password, String imageUrl, boolean isUser, boolean isCritic, boolean isAdmin) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userId = userId;
+        this.password = password;
+        this.imageUrl = imageUrl;
+        this.isUser = isUser;
+        this.isCritic = isCritic;
+        this.isAdmin = isAdmin;
+    }
+
+    public User(String firstName, String lastName, String email, String userId, String password, String imageUrl, String documentId, boolean isUser, boolean isCritic, boolean isAdmin) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userId = userId;
+        this.password = password;
+        this.imageUrl = imageUrl;
+        this.documentId = documentId;
+        this.isUser = isUser;
+        this.isCritic = isCritic;
+        this.isAdmin = isAdmin;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

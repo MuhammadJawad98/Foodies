@@ -33,7 +33,7 @@ public class RestaurantsFragment extends Fragment implements RecyclerViewAdapter
     private RecyclerViewAdapter adapter;
     private List<Restaurant> restaurantList = new ArrayList<>();
     private ProgressBar progressBar;
-
+    private RecyclerView recyclerView;
     public RestaurantsFragment() {
         // Required empty public constructor
         Log.d("Restaurant Fragment", "I am here");
@@ -69,7 +69,7 @@ public class RestaurantsFragment extends Fragment implements RecyclerViewAdapter
             restaurantList.clear();
             restaurantList = list;
             progressBar.setVisibility(View.GONE);
-            RecyclerView recyclerView = view.findViewById(R.id.restaurantRecyclerview_id);
+             recyclerView = view.findViewById(R.id.restaurantRecyclerview_id);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             adapter = new RecyclerViewAdapter(getContext(), restaurantList);
             adapter.setClickListener(this);

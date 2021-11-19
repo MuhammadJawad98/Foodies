@@ -10,6 +10,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -70,23 +71,22 @@ public class SignUpActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
 
                     auth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    progressBar.setVisibility(View.GONE);
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        CommonFunctions.showToast("Login failed." + task.getException(), getApplicationContext());
+                            .addOnCompleteListener(this, task -> {
+                                progressBar.setVisibility(View.GONE);
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    CommonFunctions.showToast("Login failed." + task.getException(), getApplicationContext());
 
-                                    } else {
-                                        User user = new User(firstName, lastName, email, FireStore.getCurrentUserUUid(), true, false, false);
-                                        FireStore.addUserToFireStore(user);
-                                        CommonFunctions.showToast("Login Successful.", getApplicationContext());
-                                        startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
-                                        finish();
-                                    }
+                                } else {
+                                    //String firstName, String lastName, String email, String userId, String password, String imgaeUrl, boolean isUser, boolean isCritic, boolean isAdmin
+                                    User user = new User(firstName, lastName, email, FireStore.getCurrentUserUUid(),password, Constants.defaultImageUrl,
+                                    true, false, false);
+                                    FireStore.addUserToFireStore(user);
+                                    CommonFunctions.showToast("Login Successful.", getApplicationContext());
+                                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                                    finish();
                                 }
                             });
 

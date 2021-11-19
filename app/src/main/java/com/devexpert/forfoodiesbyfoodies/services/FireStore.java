@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
@@ -16,6 +17,8 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -73,7 +76,6 @@ public class FireStore {
                     if (value != null) {
                         List<Review> reviewList = new ArrayList<>();
 
-                        Log.d(">>>>>>>>>>>>>>", value.getDocuments().size() + "");
                         value.getDocuments().forEach(documentSnapshot -> {
                             try {
                                 String reviewUserName = documentSnapshot.getData().get("name").toString();
@@ -84,26 +86,22 @@ public class FireStore {
                                 List ratingList = new ArrayList<>();
                                 try {
                                     documentSnapshot.getReference().collection("rating").addSnapshotListener((value1, error1) -> {
-                                        System.out.println("####========>" + value1.getDocuments().size());
                                         value1.getDocuments().forEach(documentSnapshot1 -> {
                                             ratingList.add(documentSnapshot1.get("rating"));
-                                            System.out.println("####========>" + documentSnapshot1.get("rating"));
                                         });
                                     });
                                 } catch (Exception e) {
-                                    System.out.println("Error 2::::::::" + e.getMessage());
+                                    System.out.println("Error ::::::::" + e.getMessage());
                                 }
-                                System.out.println("list length>>>>>>>>>>>>>>" + ratingList.size());
                                 Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, rating, ratingList);
                                 reviewList.add(review);
                             } catch (Exception e) {
-                                Log.d(">>>>>Error>>>>>>>>>", e.getMessage());
+                                Log.d("Error:::", e.getMessage());
                             }
                         });
                         restaurantReviewResult.onComplete(reviewList);
                     } else {
-                        Log.d(">>>>>>>>>>>>>>", "error");
-
+                        Log.d("Error:::", "Something went wrong");
                     }
                 });
 
@@ -126,9 +124,13 @@ public class FireStore {
                     user.setLastName(document.get("lastName").toString());
                     user.setEmail(document.get("email").toString());
                     user.setUserId(document.get("userId").toString());
+                    user.setPassword(document.get("password").toString());
+                    user.setImageUrl(document.get("imageUrl").toString());
                     user.setUser(Boolean.parseBoolean(document.get("user").toString()));
                     user.setCritic(Boolean.parseBoolean(document.get("critic").toString()));
                     user.setAdmin(Boolean.parseBoolean(document.get("admin").toString()));
+                    user.setDocumentId(document.getId());
+
                     resultListener.onComplete(user);
 
                 }
@@ -151,7 +153,6 @@ public class FireStore {
         db.collection("street_food").addSnapshotListener((value, error) -> {
             foodList.clear();
             value.getDocuments().forEach(documentSnapshot -> {
-                System.out.println("*************************************************" + value.getDocuments().size());
                 StreetFood streetFood = new StreetFood();
                 streetFood.setDescription(documentSnapshot.get("description").toString());
                 streetFood.setLocation(documentSnapshot.get("location").toString());
@@ -162,7 +163,6 @@ public class FireStore {
                 streetFood.setId(documentSnapshot.getId());
                 foodList.add(streetFood);
             });
-            System.out.println("=======> food list" + foodList.size());
             result.onComplete(foodList);
 
         });
@@ -171,14 +171,23 @@ public class FireStore {
     public static void addStreetFoodStall(StreetFood streetFood, OnResult onResult) {
         db.collection("street_food").add(streetFood).addOnSuccessListener(documentReference ->
         {
-            Log.d("TAG", "Data save to db: " + documentReference.getId());
             onResult.onComplete();
         }).
                 addOnFailureListener(e -> {
-                    Log.d("TAG", "Error while adding street food");
                     onResult.onFailure();
                 });
     }
 
+    public static void updateUserData(String documentId, User user, OnResult onResult) {
+        db.collection("users").
+                document(documentId).
+                set(user).
+                addOnSuccessListener(aVoid -> {
+                    onResult.onComplete();
+                }).
+                addOnFailureListener(e -> {
+                    onResult.onFailure();
+                });
+    }
 }
 
