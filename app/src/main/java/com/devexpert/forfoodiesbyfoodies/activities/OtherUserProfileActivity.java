@@ -33,31 +33,29 @@ public class OtherUserProfileActivity extends AppCompatActivity {
         initView();
         Intent intent = getIntent();
         Review review = (Review) intent.getSerializableExtra("details");
-        FireStore.db.collection("users").whereEqualTo("userId", review.getUserId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("TAG", document.getId() + " => " + document.getData());
-                        user = new User(document.getData().get("firstName").toString(),
-                                document.getData().get("lastName").toString(),
-                                document.getData().get("email").toString(),
-                                document.getData().get("userId").toString(),
-                                document.getData().get("imageUrl").toString(),
-                                Boolean.parseBoolean(document.getData().get("user").toString()),
-                                Boolean.parseBoolean(document.getData().get("critic").toString()),
-                                Boolean.parseBoolean(document.getData().get("admin").toString()));
-                    }
-                    Picasso.get().load(user.getImageUrl()).fit().centerCrop().
-                            placeholder(R.drawable.placeholder_image)
-                            .error(R.drawable.error_image).into(userImageView);
-
-                    edtFirstName.setText(user.getFirstName());
-                    edtLastName.setText(user.getLastName());
-                    edtEmail.setText(user.getEmail());
-                } else {
-                    Log.d("TAG", "Error getting documents: ", task.getException());
+        FireStore.db.collection("users").whereEqualTo("userId",
+                review.getUserId()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Log.d("TAG", document.getId() + " => " + document.getData());
+                    user = new User(document.getData().get("firstName").toString(),
+                            document.getData().get("lastName").toString(),
+                            document.getData().get("email").toString(),
+                            document.getData().get("userId").toString(),
+                            document.getData().get("imageUrl").toString(),
+                            Boolean.parseBoolean(document.getData().get("user").toString()),
+                            Boolean.parseBoolean(document.getData().get("critic").toString()),
+                            Boolean.parseBoolean(document.getData().get("admin").toString()));
                 }
+                Picasso.get().load(user.getImageUrl()).fit().centerCrop().
+                        placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.error_image).into(userImageView);
+
+                edtFirstName.setText(user.getFirstName());
+                edtLastName.setText(user.getLastName());
+                edtEmail.setText(user.getEmail());
+            } else {
+                Log.d("TAG", "Error getting documents: ", task.getException());
             }
         });
 
