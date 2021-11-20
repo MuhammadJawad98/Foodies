@@ -125,7 +125,6 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         }
 
         FireStore.db.collection("street_food").whereEqualTo("name", name).addSnapshotListener((value, error) -> {
-//            System.out.println(">>>??>>??>>??" + value.getDocuments().toString());
             if (value.getDocuments().size() > 0) {
                 Toast.makeText(getApplicationContext(), "Already exist", Toast.LENGTH_SHORT).show();
 

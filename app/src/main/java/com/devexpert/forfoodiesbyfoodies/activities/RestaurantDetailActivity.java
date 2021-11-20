@@ -32,16 +32,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
         initView();
-        FireStore.getData(new FirebaseUserDataResult() {
-            @Override
-            public void onComplete(User users) {
-                user = users;
-                System.out.println("######1##" + user.getFirstName() +"  " +user.isUser());
+        FireStore.getData(users -> {
+            user = users;
+            System.out.println("######1##" + user.getFirstName() +"  " +user.isUser());
 //                if (user.isAdmin()) {
 //                    Log.d("is user::: ", user.isUser() + "");
 //                    btnAddReview.setVisibility(View.VISIBLE);
 //                }
-            }
         });
 
 

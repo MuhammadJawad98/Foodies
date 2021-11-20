@@ -79,9 +79,12 @@ public class FireStore {
                         value.getDocuments().forEach(documentSnapshot -> {
                             try {
                                 String reviewUserName = documentSnapshot.getData().get("name").toString();
+                                String reviewUserLastName = documentSnapshot.getData().get("lastName").toString();
                                 String reviewUserId = documentSnapshot.getData().get("id").toString();
                                 String reviewId = documentSnapshot.getId();
                                 String reviewComment = documentSnapshot.getData().get("comment").toString();
+                                String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
+                                String email = documentSnapshot.getData().get("email").toString();
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
                                 List ratingList = new ArrayList<>();
                                 try {
@@ -93,7 +96,7 @@ public class FireStore {
                                 } catch (Exception e) {
                                     System.out.println("Error ::::::::" + e.getMessage());
                                 }
-                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, rating, ratingList);
+                                Review review = new Review(reviewUserName, reviewUserLastName, reviewId, reviewUserId, reviewComment, profileUrl, email, rating, ratingList);
                                 reviewList.add(review);
                             } catch (Exception e) {
                                 Log.d("Error:::", e.getMessage());

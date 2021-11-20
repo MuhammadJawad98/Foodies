@@ -15,15 +15,6 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String userId, boolean isUser, boolean isCritic, boolean isAdmin) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userId = userId;
-        this.isUser = isUser;
-        this.isCritic = isCritic;
-        this.isAdmin = isAdmin;
-    }
 
     public User(String firstName, String lastName, String email, String userId, String password, String imageUrl, boolean isUser, boolean isCritic, boolean isAdmin) {
         this.firstName = firstName;
@@ -37,14 +28,12 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
-    public User(String firstName, String lastName, String email, String userId, String password, String imageUrl, String documentId, boolean isUser, boolean isCritic, boolean isAdmin) {
+    public User(String firstName, String lastName, String email, String userId, String imageUrl, boolean isUser, boolean isCritic, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.userId = userId;
-        this.password = password;
         this.imageUrl = imageUrl;
-        this.documentId = documentId;
         this.isUser = isUser;
         this.isCritic = isCritic;
         this.isAdmin = isAdmin;

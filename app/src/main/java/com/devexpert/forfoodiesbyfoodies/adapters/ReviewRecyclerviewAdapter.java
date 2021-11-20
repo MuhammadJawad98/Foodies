@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.activities.OtherUserProfileActivity;
 import com.devexpert.forfoodiesbyfoodies.activities.RestaurantDetailActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
@@ -48,7 +49,11 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         Review review = mData.get(position);
         holder.nameTv.setText(review.getName());
         holder.commentTv.setText(review.getComment());
+        Picasso.get().load(review.getProfileUrl()).fit().centerCrop().
+                placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.error_image).into(holder.imageView);
         float value = 0;
+
 //        if (review.getReviewRating().size() > 0) {
 //            for (int i = 0; i < review.getReviewRating().size(); i++) {
 //                value = value + (float) review.getReviewRating().get(i);
@@ -58,6 +63,18 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
 //        }
 
         holder.ratingBar.setRating(value);
+        holder.imageView.setOnClickListener(view -> {
+            System.out.println("$$$$$$$$$" + review.getName());
+            try {
+                Intent intent = new Intent(context, OtherUserProfileActivity.class);
+                intent.putExtra("details", review);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                System.out.println("error::::" + e.toString());
+            }
+
+        });
     }
 
     // total number of rows
@@ -72,12 +89,14 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         TextView nameTv;
         TextView commentTv;
         RatingBar ratingBar;
+        ImageView imageView;
 
         ViewHolder(View itemView) {
             super(itemView);
             nameTv = itemView.findViewById(R.id.reviewerName_id);
             commentTv = itemView.findViewById(R.id.reviewerComment_id);
             ratingBar = itemView.findViewById(R.id.reviewRating_id);
+            imageView = itemView.findViewById(R.id.profile_image);
             itemView.setOnClickListener(this);
         }
 

@@ -2,36 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="10dp"
-    android:orientation="vertical">
+ android:padding="10dp"
+    android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/reviewerName_id"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="start"
+        android:src="@drawable/ic_baseline_person_24"
+        app:civ_border_width="1dp"
+        app:civ_border_color="#FF000000"/>
 
-    <RatingBar
-        android:id="@+id/reviewRating_id"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:progressTint="@color/golden"
-        android:rating="3.5"
-        android:stepSize="0.1" />
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-        android:textSize="16sp"
-        android:id="@+id/reviewerComment_id"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reviewerName_id"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <RatingBar
+            android:id="@+id/reviewRating_id"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressTint="@color/golden"
+            android:rating="3.5"
+            android:stepSize="0.1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            android:textSize="16sp"
+            android:id="@+id/reviewerComment_id"
+            />
+
+
+    </LinearLayout>
+
+
 </LinearLayout>

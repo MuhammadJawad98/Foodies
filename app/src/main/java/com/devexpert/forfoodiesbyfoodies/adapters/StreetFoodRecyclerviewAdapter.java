@@ -41,7 +41,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
     @Override
     public void onBindViewHolder(StreetFoodRecyclerviewAdapter.ViewHolder holder, int position) {
         StreetFood streetFood = mData.get(position);
-        holder.streetFoodTextView.setText(streetFood.getDescription());
+        holder.streetFoodTextView.setText(streetFood.getName());
         Picasso.get().load(streetFood.getPicture()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.streetFoodImageView);
