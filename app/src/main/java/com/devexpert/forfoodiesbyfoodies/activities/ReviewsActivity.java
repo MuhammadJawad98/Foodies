@@ -78,6 +78,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
     @Override
     public void onItemClick(View view, int position) {
         System.out.println(list.get(position).getId()+"*****************************"+restaurant.getId());
+
         CustomDialogClass cdd = new CustomDialogClass(this, list.get(position).getId(), restaurant.getId());
         cdd.show();
     }

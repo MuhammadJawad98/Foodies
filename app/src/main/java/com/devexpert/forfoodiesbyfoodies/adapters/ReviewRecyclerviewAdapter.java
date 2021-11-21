@@ -52,9 +52,10 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         Picasso.get().load(review.getProfileUrl()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.imageView);
-        float value = 0;
+//        float value = 0;
 
-//        if (review.getReviewRating().size() > 0) {
+//        if (review.getReviewRatingList().size() > 0) {
+//            System.out.println("======>>>> " + review.getReviewRatingList().size());
 //            for (int i = 0; i < review.getReviewRating().size(); i++) {
 //                value = value + (float) review.getReviewRating().get(i);
 //                System.out.println("$$$$$$$$$" + value);
@@ -62,7 +63,7 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
 //            }
 //        }
 
-        holder.ratingBar.setRating(value);
+        holder.ratingBar.setRating((float) review.getReviewRating());
         holder.imageView.setOnClickListener(view -> {
             System.out.println("$$$$$$$$$" + review.getName());
             try {

@@ -17,18 +17,27 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static com.google.android.gms.tasks.Tasks.await;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class FireStore {
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -48,19 +57,23 @@ public class FireStore {
                     if (documentSnapshots.isEmpty()) {
                         Log.d("FireStore Data: ", "onSuccess: LIST EMPTY");
                     } else {
-                        Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
-                        for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
-                            String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
-                            String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
-                            String name = documentChange.getDocument().getData().get("restaurantName").toString();
-                            String id = documentChange.getDocument().getData().get("id").toString();
+                        try {
+                            Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
+                            for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
+                                String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
+                                String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
+                                String name = documentChange.getDocument().getData().get("restaurantName").toString();
+                                String id = documentChange.getDocument().getData().get("id").toString();
 
-                            Log.d("Restaurants details: ", documentChange.getDocument().getId());
-                            Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
-                            restaurantList.add(restaurant);
+                                Log.d("Restaurants details: ", documentChange.getDocument().getId());
+                                Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
+                                restaurantList.add(restaurant);
+                            }
+                            callback.onComplete(restaurantList);
+                            Log.d("FireStore Data:", "onSuccess: " + restaurantList.toString());
+                        } catch (Exception e) {
+                            System.out.println("error" + e.toString());
                         }
-                        callback.onComplete(restaurantList);
-                        Log.d("FireStore Data:", "onSuccess: " + restaurantList.toString());
                     }
                 }).addOnFailureListener(e -> {
             callback.onComplete(restaurantList);
@@ -84,17 +97,24 @@ public class FireStore {
                                 String reviewComment = documentSnapshot.getData().get("comment").toString();
                                 String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
-                                List ratingList = new ArrayList<>();
-                                try {
-                                    documentSnapshot.getReference().collection("rating").addSnapshotListener((value1, error1) -> {
-                                        value1.getDocuments().forEach(documentSnapshot1 -> {
-                                            ratingList.add(documentSnapshot1.get("rating"));
-                                        });
-                                    });
-                                } catch (Exception e) {
-                                    System.out.println("Error ::::::::" + e.getMessage());
-                                }
-                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, ratingList);
+                                double reviewRating = Double.parseDouble(documentSnapshot.getData().get("reviewRating").toString());
+//                                List ratingList = new ArrayList<>();
+//                                try {
+//                                    documentSnapshot.getReference().collection("rating").addSnapshotListener((value1, error1) -> {
+//                                        value1.getDocuments().forEach(documentSnapshot1 -> {
+//                                            System.out.println("+++++++++++++++" + documentSnapshot1.get("rating"));
+//                                            ratingList.add(documentSnapshot1.get("rating"));
+//                                        });
+//                                        System.out.println("+++++++123++++++++" + ratingList.size());
+//
+//                                    });
+//                                    System.out.println("+++++++123456++++++++" + ratingList.size());
+//
+//                                } catch (Exception e) {
+//                                    System.out.println("Error ::::::::" + e.getMessage());
+//                                }
+                                //String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, double reviewRating
+                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
                                 reviewList.add(review);
                             } catch (Exception e) {
                                 Log.d("Error:::", e.getMessage());
@@ -113,7 +133,7 @@ public class FireStore {
         return currentFirebaseUser.getUid();
     }
 
-    public static void getData(String userId,FirebaseUserDataResult resultListener) {
+    public static void getData(String userId, FirebaseUserDataResult resultListener) {
 //        final String current = FirebaseAuth.getInstance().getCurrentUser().getUid();//getting unique user id
         db.collection("users")
                 .whereEqualTo("userId", userId)//looks for the corresponding value with the field in the database
@@ -140,12 +160,18 @@ public class FireStore {
 
     }
 
-    public static void addRating(String restaurantId, String reviewId, float rating) {
-        String userId = getCurrentUserUUid();
+    public static void addRating(String restaurantId, String reviewId, float rating, Context context) {
+//        String userId = getCurrentUserUUid();
+        YourPreference yourPreference = YourPreference.getInstance(context);
+
+        String userId = yourPreference.getData("userId");
+        System.out.println("value>>>>>>" + userId);
+
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userId);
         data.put("rating", rating);
         db.collection("restaurants").document(restaurantId).collection("reviews").document(reviewId).collection("rating").document().set(data).addOnSuccessListener(aVoid -> Log.d("TAG", "DocumentSnapshot successfully written!")).addOnFailureListener(e -> Log.w("TAG", "Error writing document", e));
+        rateReview(restaurantId, reviewId, rating);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -189,6 +215,28 @@ public class FireStore {
                 addOnFailureListener(e -> {
                     onResult.onFailure();
                 });
+    }
+
+    public static void rateReview(String restaurantDocId, String reviewDocId, float rate) {
+        try {
+            DocumentReference snapshot =
+                    db.collection("restaurants").document(restaurantDocId).collection("reviews").document(reviewDocId);
+            snapshot.get().addOnCompleteListener(task -> {
+                double rating = Double.parseDouble(task.getResult().get("reviewRating").toString());
+                double total_rating = (rating + rate) / 2;
+                System.out.println(rating +"{{{{{{"+rate+"{{{{{{{{{{{{{"+total_rating);
+                Map<String, Object> data = new HashMap<>();
+                data.put("reviewRating", total_rating);
+//                snapshot.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        System.out.println("###successfully update the rating ######" + task.getResult().toString());
+//                    }
+//                });
+            });
+        } catch (Exception e) {
+            System.out.println("error ratereview:::" + e.toString());
+        }
     }
 }
 

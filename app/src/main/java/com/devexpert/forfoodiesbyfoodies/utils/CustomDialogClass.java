@@ -27,11 +27,11 @@ public class CustomDialogClass extends Dialog implements
         this.activity = a;
     }
 
-    public CustomDialogClass(Activity activity,String id,String restaurantId) {
+    public CustomDialogClass(Activity activity, String id, String restaurantId) {
         super(activity);
         this.activity = activity;
-        this.reviewDocId =id;
-        this.restaurantId=restaurantId;
+        this.reviewDocId = id;
+        this.restaurantId = restaurantId;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class CustomDialogClass extends Dialog implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.custom_dialog);
-        yes =  findViewById(R.id.btn_yes);
-        no =  findViewById(R.id.btn_no);
-        ratingBar= findViewById(R.id.ratingBar);
+        yes = findViewById(R.id.btn_yes);
+        no = findViewById(R.id.btn_no);
+        ratingBar = findViewById(R.id.ratingBar);
         ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
-            System.out.println("rating value ====>>> "+v);
-            ratingValue=v;
+            System.out.println("rating value ====>>> " + v);
+            ratingValue = v;
         });
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
@@ -56,8 +56,11 @@ public class CustomDialogClass extends Dialog implements
         switch (v.getId()) {
             case R.id.btn_yes:
                 //call fireStore add review rating function
-                FireStore.addRating(restaurantId,reviewDocId,ratingValue);
-                activity.finish();
+             if(ratingValue>0){
+                 FireStore.addRating(restaurantId, reviewDocId, ratingValue, activity.getApplicationContext());
+                 dismiss();
+             }
+//                activity.finish();
                 break;
             case R.id.btn_no:
                 dismiss();

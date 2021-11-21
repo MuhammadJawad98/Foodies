@@ -12,17 +12,42 @@ public class Review implements Serializable {
     private String profileUrl;
     private String email;
     private double rating;
-    private List reviewRatingList;
+    private double reviewRating;
+//    private List reviewRatingList;
 
-    public Review(String name, String id, String userId, String comment, String profileUrl, double rating, List reviewRatingList) {
+
+    public Review(String name, String id, String userId, String comment, String profileUrl, double rating, double reviewRating) {
         this.name = name;
         this.id = id;
         this.userId = userId;
         this.comment = comment;
         this.profileUrl = profileUrl;
         this.rating = rating;
-        this.reviewRatingList = reviewRatingList;
+        this.reviewRating = reviewRating;
     }
+
+    public Review(String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, double reviewRating) {
+        this.name = name;
+        this.lastName = lastName;
+        this.id = id;
+        this.userId = userId;
+        this.comment = comment;
+        this.profileUrl = profileUrl;
+        this.email = email;
+        this.rating = rating;
+        this.reviewRating = reviewRating;
+    }
+
+
+//    public Review(String name, String id, String userId, String comment, String profileUrl, double rating, List reviewRatingList) {
+//        this.name = name;
+//        this.id = id;
+//        this.userId = userId;
+//        this.comment = comment;
+//        this.profileUrl = profileUrl;
+//        this.rating = rating;
+//        this.reviewRatingList = reviewRatingList;
+//    }
 
 //    public Review(String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, List reviewRatingList) {
 //        this.name = name;
@@ -100,11 +125,19 @@ public class Review implements Serializable {
         this.rating = rating;
     }
 
-    public List getReviewRatingList() {
-        return reviewRatingList;
+    public double getReviewRating() {
+        return reviewRating;
     }
 
-    public void setReviewRatingList(List reviewRatingList) {
-        this.reviewRatingList = reviewRatingList;
+    public void setReviewRating(double reviewRating) {
+        this.reviewRating = reviewRating;
     }
+
+    //    public List getReviewRatingList() {
+//        return reviewRatingList;
+//    }
+//
+//    public void setReviewRatingList(List reviewRatingList) {
+//        this.reviewRatingList = reviewRatingList;
+//    }
 }

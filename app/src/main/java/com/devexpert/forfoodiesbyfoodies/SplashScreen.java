@@ -24,7 +24,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        runAnimation();
+//        runAnimation();
         YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
         String value = yourPreference.getData("userId");
