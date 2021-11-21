@@ -227,12 +227,17 @@ public class FireStore {
                 System.out.println(rating +"{{{{{{"+rate+"{{{{{{{{{{{{{"+total_rating);
                 Map<String, Object> data = new HashMap<>();
                 data.put("reviewRating", total_rating);
-//                snapshot.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        System.out.println("###successfully update the rating ######" + task.getResult().toString());
-//                    }
-//                });
+                snapshot.update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        System.out.println("###successfully update the rating ######" + task.getResult().toString());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("fail to uodate rating value");
+                    }
+                });
             });
         } catch (Exception e) {
             System.out.println("error ratereview:::" + e.toString());
