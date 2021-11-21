@@ -15,4 +15,10 @@
             android:icon="@drawable/ic_baseline_add_24"
             android:title="Street Food" />
     </group>
+    <group android:visible="false" android:id="@+id/second_group">
+        <item
+            android:id="@+id/addCritics_id"
+            android:icon="@drawable/ic_baseline_add_24"
+            android:title="Add Critic" />
+    </group>
 </menu>

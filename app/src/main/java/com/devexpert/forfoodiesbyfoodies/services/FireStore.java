@@ -70,7 +70,7 @@ public class FireStore {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void getReviews(String documentId, RestaurantReviewResult restaurantReviewResult) {
-
+        System.out.println("????????????????????documentId: " + documentId);
         db.collection("restaurants").document(documentId).collection("reviews").addSnapshotListener(
                 (value, error) -> {
                     if (value != null) {
@@ -79,12 +79,10 @@ public class FireStore {
                         value.getDocuments().forEach(documentSnapshot -> {
                             try {
                                 String reviewUserName = documentSnapshot.getData().get("name").toString();
-                                String reviewUserLastName = documentSnapshot.getData().get("lastName").toString();
                                 String reviewUserId = documentSnapshot.getData().get("id").toString();
                                 String reviewId = documentSnapshot.getId();
                                 String reviewComment = documentSnapshot.getData().get("comment").toString();
                                 String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
-                                String email = documentSnapshot.getData().get("email").toString();
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
                                 List ratingList = new ArrayList<>();
                                 try {
@@ -96,7 +94,7 @@ public class FireStore {
                                 } catch (Exception e) {
                                     System.out.println("Error ::::::::" + e.getMessage());
                                 }
-                                Review review = new Review(reviewUserName, reviewUserLastName, reviewId, reviewUserId, reviewComment, profileUrl, email, rating, ratingList);
+                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, ratingList);
                                 reviewList.add(review);
                             } catch (Exception e) {
                                 Log.d("Error:::", e.getMessage());
@@ -115,10 +113,10 @@ public class FireStore {
         return currentFirebaseUser.getUid();
     }
 
-    public static void getData(FirebaseUserDataResult resultListener) {
-        final String current = FirebaseAuth.getInstance().getCurrentUser().getUid();//getting unique user id
+    public static void getData(String userId,FirebaseUserDataResult resultListener) {
+//        final String current = FirebaseAuth.getInstance().getCurrentUser().getUid();//getting unique user id
         db.collection("users")
-                .whereEqualTo("userId", current)//looks for the corresponding value with the field in the database
+                .whereEqualTo("userId", userId)//looks for the corresponding value with the field in the database
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (DocumentSnapshot document : task.getResult()) {

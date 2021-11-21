@@ -43,5 +43,8 @@
     <string name="submit_changes">Submit changes</string>
     <string name="food_consumer">Food Consumer</string>
     <string name="_3_5">3/5</string>
+    <string name="create_an_account">Create an account!</string>
+    <string name="admin">Admin</string>
+    <string name="critic">Critic</string>
 
 </resources>

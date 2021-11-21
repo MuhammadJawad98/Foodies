@@ -29,6 +29,7 @@ import com.devexpert.forfoodiesbyfoodies.interfaces.ImageUploadResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.google.android.gms.common.internal.service.Common;
 import com.google.firebase.storage.FirebaseStorage;
@@ -113,7 +114,12 @@ public class ProfileFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        FireStore.getData(user -> {
+        YourPreference yourPreference = YourPreference.getInstance(getContext());
+
+        String userId = yourPreference.getData("userId");
+        System.out.println("value>>>>>>" + userId);
+
+        FireStore.getData(userId, user -> {
             userData = user;
             System.out.println("document id::: " + userData.getDocumentId());
             edtEmail.setText(user.getEmail());
@@ -206,6 +212,7 @@ public class ProfileFragment extends Fragment {
 
             } else {
                 User user = new User(firstName, lastName, email, userData.getUserId(), password, userData.getImageUrl(), userData.isUser(), userData.isCritic(), userData.isAdmin());
+
                 FireStore.updateUserData(userData.getDocumentId(), user, new OnResult() {
                     @Override
                     public void onComplete() {

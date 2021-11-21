@@ -5,5 +5,5 @@ public class Constants {
     public static String vegetarian = "Vegetarian";
     public static String no_vegetarian = "No-Vegetarian";
     public static final String userID = "userId";
-    public static String defaultImageUrl = "https://ogoulmeeting.com/images/system/default_user_picture.jpg" ;
+    public static String defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/for-foodies-by-foodies-8f29e.appspot.com/o/images%2Fvote_1.png?alt=media&token=ea127aa8-b2da-4d5c-8e4c-53ce4f0fba44" ;
 }

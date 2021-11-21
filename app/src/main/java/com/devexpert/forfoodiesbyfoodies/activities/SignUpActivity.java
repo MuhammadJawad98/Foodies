@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -84,6 +86,10 @@ public class SignUpActivity extends AppCompatActivity {
                                     User user = new User(firstName, lastName, email, FireStore.getCurrentUserUUid(),password, Constants.defaultImageUrl,
                                     true, false, false);
                                     FireStore.addUserToFireStore(user);
+                                    YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+                                    yourPreference.saveData("userId",FireStore.getCurrentUserUUid());
+
+
                                     CommonFunctions.showToast("Login Successful.", getApplicationContext());
                                     startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                                     finish();

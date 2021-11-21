@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -78,6 +79,11 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.d("Login Error:", task.getException().getMessage());
                                         CommonFunctions.showToast("Something went wrong.", getApplicationContext());
                                     } else {
+                                        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+
+                                        yourPreference.saveData("userId",task.getResult().getUser().getUid());
+                                        System.out.println("login value>>>>>>"+task.getResult().getUser().getUid());
+
                                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                         startActivity(intent);
                                         finish();

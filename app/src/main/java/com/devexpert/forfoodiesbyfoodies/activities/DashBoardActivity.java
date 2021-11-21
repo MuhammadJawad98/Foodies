@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,12 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.fragments.AddUserByAdminFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.ProfileFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
@@ -33,12 +36,22 @@ public class DashBoardActivity extends AppCompatActivity {
     TextView textViewName;
     ImageView imageView;
     String name = "";
+    private User userData;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        FireStore.getData(user -> {
+
+
+        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+
+        String userId = yourPreference.getData("userId");
+        System.out.println("value>>>>>>" + userId);
+
+        FireStore.getData(userId, user -> {
+            userData = user;
 //                name=user.getFirstName();
 
             if (user.getFirstName().isEmpty()) {
@@ -50,6 +63,12 @@ public class DashBoardActivity extends AppCompatActivity {
                 Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                         placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.error_image).into(imageView);
+
+                if (userData.isAdmin()) {
+                    menu.setGroupCheckable(R.id.second_group, true, true);
+                    menu.setGroupVisible(R.id.second_group, true);
+                }
+
             }
         });
         setNavigationDrawer(); // call method
@@ -73,6 +92,8 @@ public class DashBoardActivity extends AppCompatActivity {
         imageView = headerView.findViewById(R.id.profile_image);
 
         loadFragment(new RestaurantsFragment());
+        menu = navView.getMenu();
+
 
         // implement setNavigationItemSelectedListener event on NavigationView
         navView.setNavigationItemSelectedListener(menuItem -> {
@@ -85,9 +106,13 @@ public class DashBoardActivity extends AppCompatActivity {
                 frag = new ProfileFragment();
             } else if (itemId == R.id.streetFoodFragment_id) {
                 frag = new StreetFoodFragment();
+            } else if (itemId == R.id.addCritics_id) {
+                frag = new AddUserByAdminFragment();
+            } else {
+                frag = new RestaurantsFragment();
             }
             // display a toast message with menu item's title
-            Toast.makeText(getApplicationContext(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
             loadFragment(frag);
             return false;
         });

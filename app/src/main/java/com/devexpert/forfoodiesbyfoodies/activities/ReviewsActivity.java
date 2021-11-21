@@ -48,6 +48,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         FireStore.getReviews(restaurant.getId(), reviewList -> {
             list = reviewList;
             float rating = 0;
+            System.out.println("?????????"+reviewList.size());
             if (reviewList.size() != 0) {
                 for (int i = 0; i < reviewList.size(); i++) {
                     rating = (float) (rating + reviewList.get(i).getRating());

@@ -15,6 +15,7 @@ import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.squareup.picasso.Picasso;
 
@@ -32,9 +33,16 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
         initView();
-        FireStore.getData(users -> {
+
+        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+
+        String userId = yourPreference.getData("userId");
+        System.out.println("value>>>>>>" + userId);
+
+        FireStore.getData(userId, users -> {
             user = users;
-            System.out.println("######1##" + user.getFirstName() +"  " +user.isUser());
+            System.out.println("######1##" + user.getFirstName() + "  " + user.isUser()+" "+user.isCritic()+" "+user.isAdmin());
+
 //                if (user.isAdmin()) {
 //                    Log.d("is user::: ", user.isUser() + "");
 //                    btnAddReview.setVisibility(View.VISIBLE);

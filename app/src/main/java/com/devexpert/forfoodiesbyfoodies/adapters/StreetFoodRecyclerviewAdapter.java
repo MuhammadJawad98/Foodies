@@ -2,6 +2,7 @@ package com.devexpert.forfoodiesbyfoodies.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
         ViewHolder(View itemView) {
             super(itemView);
             streetFoodTextView = itemView.findViewById(R.id.restaurantDescriptionTextView_id);
+            streetFoodTextView.setGravity(Gravity.CENTER);
             streetFoodImageView = itemView.findViewById(R.id.restaurantImageView_id);
             streetFoodViewButton = itemView.findViewById(R.id.btnRestaurantView_id);
             itemView.setOnClickListener(this);
