@@ -36,7 +36,6 @@ public class AddStreetFoodActivity extends AppCompatActivity {
     private Button btnSubmit;
     private String userId = "";
     private Uri imageUri;
-    //Firebase
     private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 

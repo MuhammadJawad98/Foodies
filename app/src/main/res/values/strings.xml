@@ -47,5 +47,6 @@
     <string name="admin">Admin</string>
     <string name="critic">Critic</string>
     <string name="logo">TODO</string>
+    <string name="restaurant_name">Restaurant Name</string>
 
 </resources>

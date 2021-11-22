@@ -16,6 +16,7 @@ import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.utils.AddReviewDialogue;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.squareup.picasso.Picasso;
 
@@ -41,12 +42,18 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
         FireStore.getData(userId, users -> {
             user = users;
-            System.out.println("######1##" + user.getFirstName() + "  " + user.isUser()+" "+user.isCritic()+" "+user.isAdmin());
+            System.out.println("######1##" + user.getFirstName() + "  " + user.isUser() + " " + user.isCritic() + " " + user.isAdmin());
 
 //                if (user.isAdmin()) {
 //                    Log.d("is user::: ", user.isUser() + "");
 //                    btnAddReview.setVisibility(View.VISIBLE);
 //                }
+//            if (user.isCritic()) {
+//                btnAddReview.setOnClickListener(view -> {
+//                    AddReviewDialogue reviewDialogue = new AddReviewDialogue(this);
+//                    reviewDialogue.show();
+//                });
+//            }
         });
 
 
@@ -57,10 +64,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                 .error(R.drawable.error_image).into(restaurantImageView);
         restaurantTextView.setText(restaurant.getRestaurantDescription());
         restaurantNameTextView.setText(restaurant.getRestaurantName());
-//        btnAddReview.setOnClickListener(view -> {
-//            CustomDialogClass cdd = new CustomDialogClass(this);
-//            cdd.show();
-//        });
+
         btnReservation.setOnClickListener(view -> {
             Intent intent1 = new Intent(getApplicationContext(), ReservationActivity.class);
             startActivity(intent1);
@@ -70,7 +74,10 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             intent2.putExtra("details", restaurant);
             startActivity(intent2);
         });
-
+        btnAddReview.setOnClickListener(view -> {
+            AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user);
+            reviewDialogue.show();
+        });
     }
 
     void initView() {

@@ -60,6 +60,7 @@ public class FireStore {
                         try {
                             Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
                             for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
+                                System.out.println("?????????" + documentChange.getType().name());
                                 String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
                                 String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
                                 String name = documentChange.getDocument().getData().get("restaurantName").toString();
@@ -83,7 +84,6 @@ public class FireStore {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void getReviews(String documentId, RestaurantReviewResult restaurantReviewResult) {
-        System.out.println("????????????????????documentId: " + documentId);
         db.collection("restaurants").document(documentId).collection("reviews").addSnapshotListener(
                 (value, error) -> {
                     if (value != null) {
@@ -98,22 +98,6 @@ public class FireStore {
                                 String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
                                 double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
                                 double reviewRating = Double.parseDouble(documentSnapshot.getData().get("reviewRating").toString());
-//                                List ratingList = new ArrayList<>();
-//                                try {
-//                                    documentSnapshot.getReference().collection("rating").addSnapshotListener((value1, error1) -> {
-//                                        value1.getDocuments().forEach(documentSnapshot1 -> {
-//                                            System.out.println("+++++++++++++++" + documentSnapshot1.get("rating"));
-//                                            ratingList.add(documentSnapshot1.get("rating"));
-//                                        });
-//                                        System.out.println("+++++++123++++++++" + ratingList.size());
-//
-//                                    });
-//                                    System.out.println("+++++++123456++++++++" + ratingList.size());
-//
-//                                } catch (Exception e) {
-//                                    System.out.println("Error ::::::::" + e.getMessage());
-//                                }
-                                //String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, double reviewRating
                                 Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
                                 reviewList.add(review);
                             } catch (Exception e) {
@@ -134,9 +118,8 @@ public class FireStore {
     }
 
     public static void getData(String userId, FirebaseUserDataResult resultListener) {
-//        final String current = FirebaseAuth.getInstance().getCurrentUser().getUid();//getting unique user id
         db.collection("users")
-                .whereEqualTo("userId", userId)//looks for the corresponding value with the field in the database
+                .whereEqualTo("userId", userId)
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (DocumentSnapshot document : task.getResult()) {
@@ -161,12 +144,8 @@ public class FireStore {
     }
 
     public static void addRating(String restaurantId, String reviewId, float rating, Context context) {
-//        String userId = getCurrentUserUUid();
         YourPreference yourPreference = YourPreference.getInstance(context);
-
         String userId = yourPreference.getData("userId");
-        System.out.println("value>>>>>>" + userId);
-
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userId);
         data.put("rating", rating);
@@ -197,24 +176,16 @@ public class FireStore {
 
     public static void addStreetFoodStall(StreetFood streetFood, OnResult onResult) {
         db.collection("street_food").add(streetFood).addOnSuccessListener(documentReference ->
-        {
-            onResult.onComplete();
-        }).
-                addOnFailureListener(e -> {
-                    onResult.onFailure();
-                });
+                onResult.onComplete()).
+                addOnFailureListener(e -> onResult.onFailure());
     }
 
     public static void updateUserData(String documentId, User user, OnResult onResult) {
         db.collection("users").
                 document(documentId).
                 set(user).
-                addOnSuccessListener(aVoid -> {
-                    onResult.onComplete();
-                }).
-                addOnFailureListener(e -> {
-                    onResult.onFailure();
-                });
+                addOnSuccessListener(aVoid -> onResult.onComplete()).
+                addOnFailureListener(e -> onResult.onFailure());
     }
 
     public static void rateReview(String restaurantDocId, String reviewDocId, float rate) {
@@ -224,24 +195,40 @@ public class FireStore {
             snapshot.get().addOnCompleteListener(task -> {
                 double rating = Double.parseDouble(task.getResult().get("reviewRating").toString());
                 double total_rating = (rating + rate) / 2;
-                System.out.println(rating +"{{{{{{"+rate+"{{{{{{{{{{{{{"+total_rating);
                 Map<String, Object> data = new HashMap<>();
                 data.put("reviewRating", total_rating);
-                snapshot.update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        System.out.println("###successfully update the rating ######" + task.getResult().toString());
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("fail to uodate rating value");
-                    }
-                });
+                snapshot.update(data);
+
             });
         } catch (Exception e) {
             System.out.println("error ratereview:::" + e.toString());
         }
+    }
+
+    public static void addRestaurant(String restaurantImageUrl, String restaurantDescription, String restaurantName) {
+        DocumentReference snapshot = db.collection("restaurants").document();
+        String id = snapshot.getId();
+        Restaurant restaurant = new Restaurant(restaurantImageUrl, restaurantDescription, restaurantName, id);
+        snapshot.set(restaurant).addOnSuccessListener(aVoid -> Log.d("Restaurant: ", "Successfully added restaurant")).
+                addOnFailureListener(e -> Log.d("Restaurant: ", "Fail to added restaurant"));
+    }
+
+    public static void addRestaurantReview(String documentPath, String comment, String id, String name, String profileUrl, float rating) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("comment", comment);
+        data.put("id", id);
+        data.put("name", name);
+        data.put("profileUrl", profileUrl);
+        data.put("rating", rating);
+        data.put("reviewRating", 0.0);
+
+        db.collection("restaurants").document(documentPath).collection("reviews").document().set(data).
+                addOnSuccessListener(aVoid -> {
+                    Log.d("Add review to res ", "Successfully added");
+                }).addOnFailureListener(e -> {
+            Log.d("Add review to res ", "Fail to added");
+
+        });
     }
 }
 
