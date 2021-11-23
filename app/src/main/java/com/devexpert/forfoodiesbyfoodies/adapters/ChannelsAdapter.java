@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.ChatActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Channels;
+import com.devexpert.forfoodiesbyfoodies.models.User;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHo
     private LayoutInflater mInflater;
     private Context context;
 
+
     public ChannelsAdapter(Context context, List channelList) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.channelList = channelList;
+
     }
 
     @Override
@@ -38,13 +41,10 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHo
     public void onBindViewHolder(ChannelsAdapter.ViewHolder holder, int position) {
         Channels channels = channelList.get(position);
         holder.textView.setText(channels.getTopic());
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("docId", channels.getId());
-                context.startActivity(intent);
-            }
+        holder.linearLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ChatActivity.class);
+            intent.putExtra("docId", channels.getId());
+            context.startActivity(intent);
         });
 
     }

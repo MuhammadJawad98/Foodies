@@ -3,7 +3,10 @@ package com.devexpert.forfoodiesbyfoodies.services;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
@@ -16,12 +19,15 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,9 +232,10 @@ public class FireStore {
             System.out.println("channels doc messages" + value.getDocuments().size());
             List list = new ArrayList();
             value.getDocuments().forEach(documentSnapshot -> {
+
                 Chat chat = new Chat();
                 chat.setText(documentSnapshot.get("text").toString());
-                chat.setTimeStamp(documentSnapshot.get("timestamp").toString());
+                chat.setTimestamp(documentSnapshot.get("timestamp").toString());
                 chat.setUserId(documentSnapshot.get("userId").toString());
                 chat.setUserName(documentSnapshot.get("userName").toString());
                 list.add(chat);
@@ -250,6 +257,22 @@ public class FireStore {
             });
             listener.onComplete(channelsList);
         });
+    }
+
+    public static void sendMessage(String docId, Chat chat, OnResult onResult) {
+        db.collection("channels").document(docId).collection("messages").add(chat).addOnSuccessListener(documentReference -> {
+            Log.d("Message Creation: ", "Successfully added message");
+            onResult.onComplete();
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Message Creation: ", "message sending fail");
+                onResult.onFailure();
+
+            }
+        });
+
+
     }
 }
 

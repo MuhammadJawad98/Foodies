@@ -1,19 +1,17 @@
 package com.devexpert.forfoodiesbyfoodies.models;
 
-import com.google.type.DateTime;
-
 public class Chat {
     String text;
-    String timeStamp;
+    String timestamp;
     String userId;
     String userName;
 
     public Chat() {
     }
 
-    public Chat(String text, String timeStamp, String userId, String userName) {
+    public Chat(String text, String timestamp, String userId, String userName) {
         this.text = text;
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
         this.userId = userId;
         this.userName = userName;
     }
@@ -26,12 +24,12 @@ public class Chat {
         this.text = text;
     }
 
-    public String getTimeStamp() {
-        return timeStamp;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getUserId() {

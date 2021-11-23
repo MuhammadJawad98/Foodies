@@ -1,7 +1,9 @@
 package com.devexpert.forfoodiesbyfoodies.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,7 +16,10 @@ import android.view.ViewGroup;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.adapters.ChannelsAdapter;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
+import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
+import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +30,18 @@ public class ChatForumFragment extends Fragment {
     private ChannelsAdapter adapter;
     private List list = new ArrayList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public ChatForumFragment() {
+
         FireStore.getChannels(channelList -> {
             list.clear();
             list = channelList;
             adapter = new ChannelsAdapter(getContext(), list);
-
             recyclerView.setAdapter(adapter);
         });
+
+
+
     }
 
 

@@ -22,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 public class CommonFunctions {
@@ -89,4 +90,7 @@ public class CommonFunctions {
 
     }
 
+    public static  String CurrentTime(){
+        return java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+    }
 }
