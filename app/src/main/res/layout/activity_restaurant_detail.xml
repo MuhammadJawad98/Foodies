@@ -60,6 +60,7 @@
             android:layout_marginStart="1dp"
             android:layout_marginLeft="1dp"
             android:text="@string/reservation"
+            android:visibility="gone"
             android:layout_weight="1"/>
     </LinearLayout>
 

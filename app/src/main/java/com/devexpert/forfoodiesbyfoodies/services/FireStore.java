@@ -3,41 +3,30 @@ package com.devexpert.forfoodiesbyfoodies.services;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.StreetFoodResult;
+import com.devexpert.forfoodiesbyfoodies.models.Channels;
+import com.devexpert.forfoodiesbyfoodies.models.Chat;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
-import static com.google.android.gms.tasks.Tasks.await;
-import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class FireStore {
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -83,8 +72,8 @@ public class FireStore {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void getReviews(String documentId, RestaurantReviewResult restaurantReviewResult) {
-        db.collection("restaurants").document(documentId).collection("reviews").addSnapshotListener(
+    public static void getReviews(String rootCollection, String documentId, RestaurantReviewResult restaurantReviewResult) {
+        db.collection(rootCollection).document(documentId).collection("reviews").addSnapshotListener(
                 (value, error) -> {
                     if (value != null) {
                         List<Review> reviewList = new ArrayList<>();
@@ -213,7 +202,7 @@ public class FireStore {
                 addOnFailureListener(e -> Log.d("Restaurant: ", "Fail to added restaurant"));
     }
 
-    public static void addRestaurantReview(String documentPath, String comment, String id, String name, String profileUrl, float rating) {
+    public static void addRestaurantReview(String rootCollection, String documentPath, String comment, String id, String name, String profileUrl, float rating) {
         Map<String, Object> data = new HashMap<>();
         data.put("comment", comment);
         data.put("id", id);
@@ -222,12 +211,44 @@ public class FireStore {
         data.put("rating", rating);
         data.put("reviewRating", 0.0);
 
-        db.collection("restaurants").document(documentPath).collection("reviews").document().set(data).
+        db.collection(rootCollection).document(documentPath).collection("reviews").document().set(data).
                 addOnSuccessListener(aVoid -> {
                     Log.d("Add review to res ", "Successfully added");
                 }).addOnFailureListener(e -> {
             Log.d("Add review to res ", "Fail to added");
 
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void getChannelChat(String docId, FirebaseResultListener resultListener) {
+        db.collection("channels").document(docId).collection("messages").addSnapshotListener((value, error) -> {
+            System.out.println("channels doc messages" + value.getDocuments().size());
+            List list = new ArrayList();
+            value.getDocuments().forEach(documentSnapshot -> {
+                Chat chat = new Chat();
+                chat.setText(documentSnapshot.get("text").toString());
+                chat.setTimeStamp(documentSnapshot.get("timestamp").toString());
+                chat.setUserId(documentSnapshot.get("userId").toString());
+                chat.setUserName(documentSnapshot.get("userName").toString());
+                list.add(chat);
+            });
+            resultListener.onComplete(list);
+        });
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void getChannels(FirebaseResultListener listener) {
+        List<Channels> channelsList = new ArrayList<>();
+        db.collection("channels").addSnapshotListener((value, error) -> {
+            value.getDocuments().forEach(documentSnapshot -> {
+                Channels channel = new Channels();
+                channel.setTopic(documentSnapshot.get("topic").toString());
+                channel.setId(documentSnapshot.getId());
+                channelsList.add(channel);
+            });
+            listener.onComplete(channelsList);
         });
     }
 }

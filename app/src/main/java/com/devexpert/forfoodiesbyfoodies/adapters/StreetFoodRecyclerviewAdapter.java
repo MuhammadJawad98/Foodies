@@ -16,6 +16,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.RestaurantDetailActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
                 .error(R.drawable.error_image).into(holder.streetFoodImageView);
         holder.streetFoodViewButton.setOnClickListener(view -> {
             Intent intent = new Intent(context, RestaurantDetailActivity.class);
+            intent.putExtra("from", Constants.streetFoodActivity);
             intent.putExtra("details",
                     new Restaurant(streetFood.getPicture(), streetFood.getDescription(), streetFood.getName(), streetFood.getId()));
             context.startActivity(intent);

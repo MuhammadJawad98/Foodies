@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.fragments.AddUserByAdminFragment;
+import com.devexpert.forfoodiesbyfoodies.fragments.ChatForumFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.ProfileFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
@@ -108,6 +109,8 @@ public class DashBoardActivity extends AppCompatActivity {
                 frag = new StreetFoodFragment();
             } else if (itemId == R.id.addCritics_id) {
                 frag = new AddUserByAdminFragment();
+            } else if (itemId == R.id.channelFragment_id) {
+                frag = new ChatForumFragment();
             } else {
                 frag = new RestaurantsFragment();
             }

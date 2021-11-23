@@ -17,6 +17,7 @@ import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.AddReviewDialogue;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +29,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private Button btnReview;
     private Button btnAddReview;
     private User user;
+    private String from;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,28 +41,45 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
         String userId = yourPreference.getData("userId");
         System.out.println("value>>>>>>" + userId);
+        Intent intent = getIntent();
+        from = intent.getExtras().getString("from");
+        Restaurant restaurant = (Restaurant) intent.getSerializableExtra("details");
+
+        System.out.println(restaurant.getId() + "$$$$$$$$$$$$$$$$$$ from: " + from);
+
 
         FireStore.getData(userId, users -> {
             user = users;
             System.out.println("######1##" + user.getFirstName() + "  " + user.isUser() + " " + user.isCritic() + " " + user.isAdmin());
 
-//                if (user.isAdmin()) {
-//                    Log.d("is user::: ", user.isUser() + "");
-//                    btnAddReview.setVisibility(View.VISIBLE);
-//                }
-//            if (user.isCritic()) {
-//                btnAddReview.setOnClickListener(view -> {
-//                    AddReviewDialogue reviewDialogue = new AddReviewDialogue(this);
-//                    reviewDialogue.show();
-//                });
-//            }
+
+            if (from.equals(Constants.restaurantDetailActivity)) {
+                if (user.isCritic()) {
+                    btnAddReview.setOnClickListener(view -> {
+                        AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user, from);
+                        reviewDialogue.show();
+                    });
+                }
+            } else {
+
+                btnAddReview.setOnClickListener(view -> {
+                    AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user, from);
+                    reviewDialogue.show();
+                });
+            }
+
+
         });
 
 
-        Intent intent = getIntent();
-        Restaurant restaurant = (Restaurant) intent.getSerializableExtra("details");
-        Picasso.get().load(restaurant.getRestaurantImageUrl()).fit().centerCrop().
-                placeholder(R.drawable.placeholder_image)
+        if (from.equals(Constants.streetFoodActivity)) {
+            btnReservation.setVisibility(View.GONE);
+
+        } else {
+            btnReservation.setVisibility(View.VISIBLE);
+        }
+
+        Picasso.get().load(restaurant.getRestaurantImageUrl()).fit().centerCrop().placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(restaurantImageView);
         restaurantTextView.setText(restaurant.getRestaurantDescription());
         restaurantNameTextView.setText(restaurant.getRestaurantName());
@@ -72,12 +91,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         btnReview.setOnClickListener(view -> {
             Intent intent2 = new Intent(getApplicationContext(), ReviewsActivity.class);
             intent2.putExtra("details", restaurant);
+            intent2.putExtra("from", from);
             startActivity(intent2);
         });
-        btnAddReview.setOnClickListener(view -> {
-            AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user);
-            reviewDialogue.show();
-        });
+//        btnAddReview.setOnClickListener(view -> {
+//            AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user);
+//            reviewDialogue.show();
+//        });
     }
 
     void initView() {

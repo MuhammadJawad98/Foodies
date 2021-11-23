@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ForFoodiesByFoodies">
-        <activity android:name=".activities.AddRestaurantActivity"></activity>
+        <activity android:name=".activities.ChatActivity"></activity>
+        <activity android:name=".activities.AddRestaurantActivity" />
         <activity android:name=".activities.OtherUserProfileActivity" />
         <activity android:name=".activities.AddStreetFoodActivity" />
         <activity android:name=".activities.ReviewsActivity" />

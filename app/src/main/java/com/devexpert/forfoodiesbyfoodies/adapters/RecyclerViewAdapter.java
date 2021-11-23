@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.RestaurantDetailActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .error(R.drawable.error_image).into(holder.restaurantImageView);
         holder.detailsViewButton.setOnClickListener(view -> {
             Intent intent=new Intent(context, RestaurantDetailActivity.class);
+            intent.putExtra("from", Constants.restaurantDetailActivity);
             intent.putExtra("details",restaurant);
             context.startActivity(intent);
         });

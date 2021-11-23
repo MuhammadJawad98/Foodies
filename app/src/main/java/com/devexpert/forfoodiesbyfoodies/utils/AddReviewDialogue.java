@@ -24,17 +24,19 @@ public class AddReviewDialogue extends Dialog implements
     String resDocId;
     float ratingValue;
     User user;
+    String from;
 
     public AddReviewDialogue(Activity a) {
         super(a);
         this.activity = a;
     }
 
-    public AddReviewDialogue(Activity activity, String id, User user) {
+    public AddReviewDialogue(Activity activity, String id, User user, String from) {
         super(activity);
         this.activity = activity;
         this.resDocId = id;
         this.user = user;
+        this.from = from;
     }
 
     @Override
@@ -60,10 +62,11 @@ public class AddReviewDialogue extends Dialog implements
         switch (v.getId()) {
             case R.id.btn_yes:
                 String review = edtReview.getText().toString().trim();
-                FireStore.addRestaurantReview(resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
-                dismiss();
-                break;
-            case R.id.btn_no:
+                if (from.equals(Constants.restaurantDetailActivity)) {
+                    FireStore.addRestaurantReview(Constants.rootCollectionRestaurant, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
+                } else {
+                    FireStore.addRestaurantReview(Constants.rootCollectionStreetFood, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
+                }
                 dismiss();
                 break;
             default:

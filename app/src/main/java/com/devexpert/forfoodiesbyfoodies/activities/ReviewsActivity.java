@@ -9,18 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
-import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
 import com.devexpert.forfoodiesbyfoodies.adapters.ReviewRecyclerviewAdapter;
-import com.devexpert.forfoodiesbyfoodies.interfaces.RestaurantReviewResult;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
     private Restaurant restaurant;
     RecyclerView recyclerView;
     List<Review> list = new ArrayList();
+    private String from;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -44,11 +43,18 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
         Intent intent = getIntent();
         restaurant = (Restaurant) intent.getSerializableExtra("details");
+        from = intent.getExtras().getString("from");
+        String rootCollection;
+        if (from.equals(Constants.restaurantDetailActivity)) {
+            rootCollection = Constants.rootCollectionRestaurant;
+        } else {
+            rootCollection = Constants.rootCollectionStreetFood;
 
-        FireStore.getReviews(restaurant.getId(), reviewList -> {
+        }
+        FireStore.getReviews(rootCollection, restaurant.getId(), reviewList -> {
             list = reviewList;
             float rating = 0;
-            System.out.println("?????????"+reviewList.size());
+            System.out.println("?????????" + reviewList.size());
             if (reviewList.size() != 0) {
                 for (int i = 0; i < reviewList.size(); i++) {
                     rating = (float) (rating + reviewList.get(i).getRating());
@@ -77,7 +83,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
     @Override
     public void onItemClick(View view, int position) {
-        System.out.println(list.get(position).getId()+"*****************************"+restaurant.getId());
+        System.out.println(list.get(position).getId() + "*****************************" + restaurant.getId());
 
         CustomDialogClass cdd = new CustomDialogClass(this, list.get(position).getId(), restaurant.getId());
         cdd.show();

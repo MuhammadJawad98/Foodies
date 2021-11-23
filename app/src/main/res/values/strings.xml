@@ -48,5 +48,8 @@
     <string name="critic">Critic</string>
     <string name="logo">TODO</string>
     <string name="restaurant_name">Restaurant Name</string>
+    <string name="channels">Channels</string>
+    <string name="send">Send</string>
+    <string name="type_message">Type message</string>
 
 </resources>
