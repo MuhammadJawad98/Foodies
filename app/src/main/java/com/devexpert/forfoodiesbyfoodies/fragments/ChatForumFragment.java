@@ -20,6 +20,7 @@ import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ChatForumFragment extends Fragment {
     private RecyclerView recyclerView;
     private ChannelsAdapter adapter;
     private List list = new ArrayList<>();
+    private FloatingActionButton actionButton;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public ChatForumFragment() {
@@ -39,7 +41,6 @@ public class ChatForumFragment extends Fragment {
             adapter = new ChannelsAdapter(getContext(), list);
             recyclerView.setAdapter(adapter);
         });
-
 
 
     }
@@ -58,7 +59,13 @@ public class ChatForumFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+        actionButton = view.findViewById(R.id.fab_addChannels);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
         return view;
     }
 }

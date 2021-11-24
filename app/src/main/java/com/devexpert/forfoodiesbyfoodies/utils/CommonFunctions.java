@@ -3,26 +3,19 @@ package com.devexpert.forfoodiesbyfoodies.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.devexpert.forfoodiesbyfoodies.interfaces.ImageUploadResult;
-import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
-import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
-import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class CommonFunctions {
@@ -90,7 +83,16 @@ public class CommonFunctions {
 
     }
 
-    public static  String CurrentTime(){
-        return java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+//    public static  String CurrentTime(){
+//        return java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+//    }
+    public static Date CurrentDateTime(){
+        Date date = new Date();
+        return date;
+    }
+    public static  String convertTime(Date date){
+        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm a");
+        String time = dateFormat.format(date);
+        return time;
     }
 }

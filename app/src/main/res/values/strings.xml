@@ -51,5 +51,6 @@
     <string name="channels">Channels</string>
     <string name="send">Send</string>
     <string name="type_message">Type message</string>
+    <string name="for_adding_chat_topics">for adding chat topics</string>
 
 </resources>

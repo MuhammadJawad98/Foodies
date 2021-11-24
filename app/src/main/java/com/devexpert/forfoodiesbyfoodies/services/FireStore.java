@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
@@ -19,16 +18,16 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,10 +231,10 @@ public class FireStore {
             System.out.println("channels doc messages" + value.getDocuments().size());
             List list = new ArrayList();
             value.getDocuments().forEach(documentSnapshot -> {
-
                 Chat chat = new Chat();
                 chat.setText(documentSnapshot.get("text").toString());
-                chat.setTimestamp(documentSnapshot.get("timestamp").toString());
+                Date creationDate = documentSnapshot.getDate("timestamp");
+                chat.setTimestamp(creationDate);
                 chat.setUserId(documentSnapshot.get("userId").toString());
                 chat.setUserName(documentSnapshot.get("userName").toString());
                 list.add(chat);
@@ -263,13 +262,10 @@ public class FireStore {
         db.collection("channels").document(docId).collection("messages").add(chat).addOnSuccessListener(documentReference -> {
             Log.d("Message Creation: ", "Successfully added message");
             onResult.onComplete();
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Message Creation: ", "message sending fail");
-                onResult.onFailure();
+        }).addOnFailureListener(e -> {
+            Log.d("Message Creation: ", "message sending fail");
+            onResult.onFailure();
 
-            }
         });
 
 

@@ -32,6 +32,8 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 public class DashBoardActivity extends AppCompatActivity {
     DrawerLayout dLayout;
     TextView textViewName;
