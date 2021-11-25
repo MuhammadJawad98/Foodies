@@ -9,6 +9,7 @@ public class Chat {
     Date timestamp;
     String userId;
     String userName;
+    String messageId;
 
     public Chat() {
     }
@@ -18,6 +19,22 @@ public class Chat {
         this.timestamp = timestamp;
         this.userId = userId;
         this.userName = userName;
+    }
+
+    public Chat(String text, Date timestamp, String userId, String userName, String messageId) {
+        this.text = text;
+        this.timestamp = timestamp;
+        this.userId = userId;
+        this.userName = userName;
+        this.messageId = messageId;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getText() {

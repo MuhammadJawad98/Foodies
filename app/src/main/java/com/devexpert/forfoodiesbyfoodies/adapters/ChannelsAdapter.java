@@ -40,7 +40,7 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ChannelsAdapter.ViewHolder holder, int position) {
         Channels channels = channelList.get(position);
-        holder.textView.setText(channels.getTopic());
+        holder.textView.setText("#"+channels.getTopic());
         holder.linearLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("docId", channels.getId());

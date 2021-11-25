@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseResultListener;
@@ -18,6 +19,8 @@ import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -44,67 +47,64 @@ public class FireStore {
                 .addOnFailureListener(e -> Log.w("TAG", "Error adding document", e));
     }
 
-    public static void getRestaurantFromFirebase(Context context, FirebaseResultListener callback) {
-        List<Restaurant> restaurantList = new ArrayList<>();
-        db.collection("restaurants").get()
-                .addOnSuccessListener(documentSnapshots -> {
-                    if (documentSnapshots.isEmpty()) {
-                        Log.d("FireStore Data: ", "onSuccess: LIST EMPTY");
-                    } else {
-                        try {
-                            Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
-                            for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
-                                System.out.println("?????????" + documentChange.getType().name());
-                                String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
-                                String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
-                                String name = documentChange.getDocument().getData().get("restaurantName").toString();
-                                String id = documentChange.getDocument().getData().get("id").toString();
+//    public static void getRestaurantFromFirebase(Context context, FirebaseResultListener callback) {
+//        List<Restaurant> restaurantList = new ArrayList<>();
+//        db.collection("restaurants").get()
+//                .addOnSuccessListener(documentSnapshots -> {
+//                    if (documentSnapshots.isEmpty()) {
+//                        Log.d("FireStore Data: ", "onSuccess: LIST EMPTY");
+//                    } else {
+//                        try {
+//                            Log.d("FireStore Data: ", documentSnapshots.getDocuments().size() + "");
+//                            for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
+//                                String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
+//                                String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
+//                                String name = documentChange.getDocument().getData().get("restaurantName").toString();
+//                                String id = documentChange.getDocument().getData().get("id").toString();
+//
+//                                Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
+//                                restaurantList.add(restaurant);
+//                            }
+//                            callback.onComplete(restaurantList);
+//                        } catch (Exception e) {
+//                            System.out.println("error" + e.toString());
+//                        }
+//                    }
+//                }).addOnFailureListener(e -> {
+//            callback.onComplete(restaurantList);
+//            CommonFunctions.showToast("Error while fetching data.", context);
+//        });
+//    }
 
-                                Log.d("Restaurants details: ", documentChange.getDocument().getId());
-                                Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
-                                restaurantList.add(restaurant);
-                            }
-                            callback.onComplete(restaurantList);
-                            Log.d("FireStore Data:", "onSuccess: " + restaurantList.toString());
-                        } catch (Exception e) {
-                            System.out.println("error" + e.toString());
-                        }
-                    }
-                }).addOnFailureListener(e -> {
-            callback.onComplete(restaurantList);
-            CommonFunctions.showToast("Error while fetching data.", context);
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void getReviews(String rootCollection, String documentId, RestaurantReviewResult restaurantReviewResult) {
-        db.collection(rootCollection).document(documentId).collection("reviews").addSnapshotListener(
-                (value, error) -> {
-                    if (value != null) {
-                        List<Review> reviewList = new ArrayList<>();
-
-                        value.getDocuments().forEach(documentSnapshot -> {
-                            try {
-                                String reviewUserName = documentSnapshot.getData().get("name").toString();
-                                String reviewUserId = documentSnapshot.getData().get("id").toString();
-                                String reviewId = documentSnapshot.getId();
-                                String reviewComment = documentSnapshot.getData().get("comment").toString();
-                                String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
-                                double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
-                                double reviewRating = Double.parseDouble(documentSnapshot.getData().get("reviewRating").toString());
-                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
-                                reviewList.add(review);
-                            } catch (Exception e) {
-                                Log.d("Error:::", e.getMessage());
-                            }
-                        });
-                        restaurantReviewResult.onComplete(reviewList);
-                    } else {
-                        Log.d("Error:::", "Something went wrong");
-                    }
-                });
-
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public static void getReviews(String rootCollection, String documentId, RestaurantReviewResult restaurantReviewResult) {
+//        db.collection(rootCollection).document(documentId).collection("reviews").addSnapshotListener(
+//                (value, error) -> {
+//                    if (value != null) {
+//                        List<Review> reviewList = new ArrayList<>();
+//
+//                        value.getDocuments().forEach(documentSnapshot -> {
+//                            try {
+//                                String reviewUserName = documentSnapshot.getData().get("name").toString();
+//                                String reviewUserId = documentSnapshot.getData().get("id").toString();
+//                                String reviewId = documentSnapshot.getId();
+//                                String reviewComment = documentSnapshot.getData().get("comment").toString();
+//                                String profileUrl = documentSnapshot.getData().get("profileUrl").toString();
+//                                double rating = Double.parseDouble(documentSnapshot.getData().get("rating").toString());
+//                                double reviewRating = Double.parseDouble(documentSnapshot.getData().get("reviewRating").toString());
+//                                Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
+//                                reviewList.add(review);
+//                            } catch (Exception e) {
+//                                Log.d("Error:::", e.getMessage());
+//                            }
+//                        });
+//                        restaurantReviewResult.onComplete(reviewList);
+//                    } else {
+//                        Log.d("Error:::", "Something went wrong");
+//                    }
+//                });
+//
+//    }
 
     public static String getCurrentUserUUid() {
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -225,49 +225,67 @@ public class FireStore {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void getChannelChat(String docId, FirebaseResultListener resultListener) {
-        db.collection("channels").document(docId).collection("messages").addSnapshotListener((value, error) -> {
-            System.out.println("channels doc messages" + value.getDocuments().size());
-            List list = new ArrayList();
-            value.getDocuments().forEach(documentSnapshot -> {
-                Chat chat = new Chat();
-                chat.setText(documentSnapshot.get("text").toString());
-                Date creationDate = documentSnapshot.getDate("timestamp");
-                chat.setTimestamp(creationDate);
-                chat.setUserId(documentSnapshot.get("userId").toString());
-                chat.setUserName(documentSnapshot.get("userName").toString());
-                list.add(chat);
-            });
-            resultListener.onComplete(list);
-        });
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public static void getChannelChat(String docId, FirebaseResultListener resultListener) {
+//        db.collection("channels").document(docId).collection("messages").addSnapshotListener((value, error) -> {
+//            System.out.println("channels doc messages" + value.getDocuments().size());
+//            List list = new ArrayList();
+//            value.getDocuments().forEach(documentSnapshot -> {
+//                Chat chat = new Chat();
+//                chat.setText(documentSnapshot.get("text").toString());
+//                Date creationDate = documentSnapshot.getDate("timestamp");
+//                chat.setTimestamp(creationDate);
+//                chat.setUserId(documentSnapshot.get("userId").toString());
+//                chat.setUserName(documentSnapshot.get("userName").toString());
+//                list.add(chat);
+//            });
+//            resultListener.onComplete(list);
+//        });
+//    }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void getChannels(FirebaseResultListener listener) {
-        List<Channels> channelsList = new ArrayList<>();
-        db.collection("channels").addSnapshotListener((value, error) -> {
-            value.getDocuments().forEach(documentSnapshot -> {
-                Channels channel = new Channels();
-                channel.setTopic(documentSnapshot.get("topic").toString());
-                channel.setId(documentSnapshot.getId());
-                channelsList.add(channel);
-            });
-            listener.onComplete(channelsList);
-        });
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public static void getChannels(FirebaseResultListener listener) {
+//        List<Channels> channelsList = new ArrayList<>();
+//        try {
+//            db.collection("channels").addSnapshotListener((value, error) -> {
+//                value.getDocuments().forEach(documentSnapshot -> {
+//                    Channels channel = new Channels();
+//                    channel.setTopic(documentSnapshot.get("topic").toString());
+//                    channel.setId(documentSnapshot.getId());
+//                    channelsList.add(channel);
+//                });
+//                listener.onComplete(channelsList);
+//            });
+//        } catch (Exception e) {
+//            System.out.println(">>>>>> error : " + e.getMessage());
+//        }
+//
+//    }
 
-    public static void sendMessage(String docId, Chat chat, OnResult onResult) {
+    public static void sendMessage(String docId, Chat chat) {
         db.collection("channels").document(docId).collection("messages").add(chat).addOnSuccessListener(documentReference -> {
             Log.d("Message Creation: ", "Successfully added message");
-            onResult.onComplete();
         }).addOnFailureListener(e -> {
             Log.d("Message Creation: ", "message sending fail");
-            onResult.onFailure();
-
         });
+    }
 
+    public static void createNewTopic(String topic) {
+        String id = db.collection("channels").document().getId();
+        Channels channel = new Channels(id, topic);
+        db.collection("channels").document(id).set(channel).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Channel: ", "Successfully added");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Channel: ", "Fail to added");
+
+            }
+        });
 
     }
 }

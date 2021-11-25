@@ -40,17 +40,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
         String userId = yourPreference.getData("userId");
-        System.out.println("value>>>>>>" + userId);
         Intent intent = getIntent();
         from = intent.getExtras().getString("from");
         Restaurant restaurant = (Restaurant) intent.getSerializableExtra("details");
 
-        System.out.println(restaurant.getId() + "$$$$$$$$$$$$$$$$$$ from: " + from);
-
 
         FireStore.getData(userId, users -> {
             user = users;
-            System.out.println("######1##" + user.getFirstName() + "  " + user.isUser() + " " + user.isCritic() + " " + user.isAdmin());
 
 
             if (from.equals(Constants.restaurantDetailActivity)) {
@@ -59,6 +55,8 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                         AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user, from);
                         reviewDialogue.show();
                     });
+                }else{
+                    Log.d("Error: ","Only critic is allowed to add review");
                 }
             } else {
 

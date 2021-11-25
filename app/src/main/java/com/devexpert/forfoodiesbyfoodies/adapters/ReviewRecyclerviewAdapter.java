@@ -47,21 +47,12 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Review review = mData.get(position);
+        System.out.println("comment >>>>"+review.getComment());
         holder.nameTv.setText(review.getName());
         holder.commentTv.setText(review.getComment());
         Picasso.get().load(review.getProfileUrl()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.imageView);
-//        float value = 0;
-
-//        if (review.getReviewRatingList().size() > 0) {
-//            System.out.println("======>>>> " + review.getReviewRatingList().size());
-//            for (int i = 0; i < review.getReviewRating().size(); i++) {
-//                value = value + (float) review.getReviewRating().get(i);
-//                System.out.println("$$$$$$$$$" + value);
-//
-//            }
-//        }
 
         holder.ratingBar.setRating((float) review.getReviewRating());
         holder.imageView.setOnClickListener(view -> {

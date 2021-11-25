@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                                         YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
                                         yourPreference.saveData("userId",task.getResult().getUser().getUid());
-                                        System.out.println("login value>>>>>>"+task.getResult().getUser().getUid());
 
                                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                         startActivity(intent);

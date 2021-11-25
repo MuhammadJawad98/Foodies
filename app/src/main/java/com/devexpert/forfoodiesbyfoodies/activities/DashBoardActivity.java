@@ -7,6 +7,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -51,7 +53,7 @@ public class DashBoardActivity extends AppCompatActivity {
         YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
         String userId = yourPreference.getData("userId");
-        System.out.println("value>>>>>>" + userId);
+
 
         FireStore.getData(userId, user -> {
             userData = user;
@@ -61,7 +63,6 @@ public class DashBoardActivity extends AppCompatActivity {
                 textViewName.setText("User name");
 
             } else {
-                System.out.println("!@!@!@!@!@!@!@" + user.getFirstName());
                 textViewName.setText(user.getFirstName() + " " + user.getLastName());
                 Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                         placeholder(R.drawable.placeholder_image)
@@ -129,5 +130,17 @@ public class DashBoardActivity extends AppCompatActivity {
         transaction.commit();
         dLayout.closeDrawers(); // close the all open Drawer Views
 
+    }
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Alert");
+        builder.setMessage("Do you want to Exist? ");
+        builder.setPositiveButton("Yes", (dialog, id) -> finish());
+        builder.setNegativeButton("No", (dialog, id) -> {
+
+        });
+        builder.show();
     }
 }

@@ -52,5 +52,12 @@
     <string name="send">Send</string>
     <string name="type_message">Type message</string>
     <string name="for_adding_chat_topics">for adding chat topics</string>
+    <string name="restaurant">Restaurants</string>
+    <string name="profile">Profile</string>
+    <string name="street_food">Street Food</string>
+    <string name="chat_forum">Chat Forum</string>
+    <string name="add_critic">Add Critic</string>
+    <string name="for_adding_new_restaurant">For adding new restaurant</string>
+    <string name="for_adding_street_food_stalls">For adding street food stalls</string>
 
 </resources>

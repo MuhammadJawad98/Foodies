@@ -117,7 +117,7 @@ public class ProfileFragment extends Fragment {
         YourPreference yourPreference = YourPreference.getInstance(getContext());
 
         String userId = yourPreference.getData("userId");
-        System.out.println("value>>>>>>" + userId);
+
 
         FireStore.getData(userId, user -> {
             userData = user;

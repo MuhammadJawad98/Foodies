@@ -4,25 +4,25 @@
 
         <item
             android:id="@+id/restaurantFragment_id"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:title="Restaurants" />
+            android:icon="@drawable/ic_restaurant"
+            android:title="@string/restaurant" />
         <item
             android:id="@+id/profileFragment_id"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:title="Profile" />
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="@string/profile" />
         <item
             android:id="@+id/streetFoodFragment_id"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:title="Street Food" />
+            android:icon="@drawable/ic_fastfood"
+            android:title="@string/street_food" />
         <item
             android:id="@+id/channelFragment_id"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:title="Chat Forum" />
+            android:icon="@drawable/ic_chat"
+            android:title="@string/chat_forum" />
     </group>
     <group android:visible="false" android:id="@+id/second_group">
         <item
             android:id="@+id/addCritics_id"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:title="Add Critic" />
+            android:icon="@drawable/ic_person_add"
+            android:title="@string/add_critic" />
     </group>
 </menu>

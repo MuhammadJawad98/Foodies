@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:id="@+id/linearLayout_id">
-<TextView
+    android:id="@+id/linearLayout_id"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Channel"
-    android:id="@+id/channelsTv_id"/>
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/channelsTv_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bangers"
+        android:textColor="@color/purple_200"
+        android:textSize="20sp" />
 </LinearLayout>

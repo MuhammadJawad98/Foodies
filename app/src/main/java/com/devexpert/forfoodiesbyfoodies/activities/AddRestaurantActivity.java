@@ -95,11 +95,12 @@ public class AddRestaurantActivity extends AppCompatActivity {
             @Override
             public void onUploadSuccess(String imageUrl) {
                 FireStore.addRestaurant(imageUrl, description, name);
+                finish();
             }
 
             @Override
             public void onUploadFailure() {
-
+                CommonFunctions.showToast("Something went wrong", getApplicationContext());
             }
         });
     }
