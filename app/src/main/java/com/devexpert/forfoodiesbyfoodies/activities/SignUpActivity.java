@@ -33,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView loginTextView;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+    private final YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +84,10 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 } else {
                                     //String firstName, String lastName, String email, String userId, String password, String imgaeUrl, boolean isUser, boolean isCritic, boolean isAdmin
-                                    User user = new User(firstName, lastName, email, FireStore.getCurrentUserUUid(),password, Constants.defaultImageUrl,
-                                    true, false, false);
+                                    User user = new User(firstName, lastName, email, task.getResult().getUser().getUid(), password, Constants.defaultImageUrl,
+                                            true, false, false);
                                     FireStore.addUserToFireStore(user);
-                                    YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
-                                    yourPreference.saveData("userId",FireStore.getCurrentUserUUid());
+                                    yourPreference.saveData("userId", task.getResult().getUser().getUid());
 
 
                                     CommonFunctions.showToast("Login Successful.", getApplicationContext());

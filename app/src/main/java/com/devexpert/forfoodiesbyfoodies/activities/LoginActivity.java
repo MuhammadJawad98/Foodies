@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private TextView signUpTextView, forgetPasswordTextView;
+    private final YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,19 +71,12 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
                                     progressBar.setVisibility(View.GONE);
                                     if (!task.isSuccessful()) {
-                                        // there was an error
                                         Log.d("Login Error:", task.getException().getMessage());
                                         CommonFunctions.showToast("Something went wrong.", getApplicationContext());
                                     } else {
-                                        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
-
-                                        yourPreference.saveData("userId",task.getResult().getUser().getUid());
-
+                                        yourPreference.saveData("userId", task.getResult().getUser().getUid());
                                         Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                         startActivity(intent);
                                         finish();

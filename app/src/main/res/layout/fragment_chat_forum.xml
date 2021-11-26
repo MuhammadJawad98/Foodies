@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/channels"
+            android:gravity="center"
             android:fontFamily="@font/bangers"
             android:textColor="@color/green"
             android:textSize="35sp"

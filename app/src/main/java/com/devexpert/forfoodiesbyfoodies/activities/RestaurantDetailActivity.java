@@ -47,32 +47,26 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
         FireStore.getData(userId, users -> {
             user = users;
-
-
             if (from.equals(Constants.restaurantDetailActivity)) {
-                if (user.isCritic()) {
+                if (users.isCritic()) {
                     btnAddReview.setOnClickListener(view -> {
                         AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user, from);
                         reviewDialogue.show();
                     });
-                }else{
-                    Log.d("Error: ","Only critic is allowed to add review");
+                } else {
+                    Log.d("Error: ", "Only critic is allowed to add review");
                 }
             } else {
-
                 btnAddReview.setOnClickListener(view -> {
                     AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user, from);
                     reviewDialogue.show();
                 });
             }
-
-
         });
 
 
         if (from.equals(Constants.streetFoodActivity)) {
             btnReservation.setVisibility(View.GONE);
-
         } else {
             btnReservation.setVisibility(View.VISIBLE);
         }
@@ -90,12 +84,9 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             Intent intent2 = new Intent(getApplicationContext(), ReviewsActivity.class);
             intent2.putExtra("details", restaurant);
             intent2.putExtra("from", from);
+            intent2.putExtra("user", user);
             startActivity(intent2);
         });
-//        btnAddReview.setOnClickListener(view -> {
-//            AddReviewDialogue reviewDialogue = new AddReviewDialogue(this, restaurant.getId(), user);
-//            reviewDialogue.show();
-//        });
     }
 
     void initView() {
@@ -105,7 +96,5 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         btnReservation = findViewById(R.id.btnReservation_id);
         btnReview = findViewById(R.id.btnViewReview_id);
         btnAddReview = findViewById(R.id.btnAddReview_id);
-
-
     }
 }

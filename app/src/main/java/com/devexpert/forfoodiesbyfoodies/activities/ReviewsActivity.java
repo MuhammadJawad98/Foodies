@@ -27,7 +27,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class ReviewsActivity extends AppCompatActivity implements ReviewRecyclerviewAdapter.ItemClickListener {
     ReviewRecyclerviewAdapter adapter;
     private TextView ratingTv;
@@ -55,6 +57,9 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             rootCollection = Constants.rootCollectionStreetFood;
 
         }
+        adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList, from, restaurant.getId());
+        recyclerView.setAdapter(adapter);
+        adapter.setClickListener(this);
         listenNewReview(rootCollection, restaurant.getId());
 
 
@@ -66,16 +71,15 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         cdd.show();
     }
 
+
     void initView() {
         ratingTv = findViewById(R.id.ratingTv_id);
         ratingPeoplesTv = findViewById(R.id.ratingPeopleTv_id);
         ratingBar = findViewById(R.id.ratingBar);
         recyclerView = findViewById(R.id.reviewRecyclerview_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList);
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(adapter);
-        adapter.setClickListener(this);
+
     }
 
     private void listenNewReview(String rootCollection, String documentId) {
@@ -87,35 +91,60 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             return;
         }
         if (value != null) {
+            String type = "";
+
             int count = reviewList.size();
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                    String reviewUserName = documentChange.getDocument().getData().get("name").toString();
-                    String reviewUserId = documentChange.getDocument().getData().get("id").toString();
-                    String reviewId = documentChange.getDocument().getId();
-                    String reviewComment = documentChange.getDocument().getData().get("comment").toString();
-                    String profileUrl = documentChange.getDocument().getData().get("profileUrl").toString();
-                    double rating = Double.parseDouble(documentChange.getDocument().getData().get("rating").toString());
-                    double reviewRating = Double.parseDouble(documentChange.getDocument().getData().get("reviewRating").toString());
-                    Review review = new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
-                    reviewList.add(review);
+                    reviewList.add(getReviewObject(documentChange));
+                    type = "ADDED";
                 }
                 if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
-//                    String docID = documentChange.getDocument().getId();
-//                    Review review = documentChange.getDocument().toObject(Review.class);
-//                    if (documentChange.getOldIndex() == documentChange.getNewIndex()) {
-//                        // Item changed but remained in same position
-//                        reviewList.set(documentChange.getOldIndex(), review);
-//                        adapter.notifyItemChanged(documentChange.getOldIndex());
-//                    }
+
+                    try {
+
+                        String docID = documentChange.getDocument().getId();
+                        int index = IntStream.range(0, reviewList.size())
+                                .filter(i -> reviewList.get(i).getId().equals(docID))
+                                .findFirst()
+                                .orElse(-1);
+
+                        reviewList.set(index, getReviewObject(documentChange));
+                        adapter.notifyItemChanged(index);
+                    } catch (Exception e) {
+                        System.out.println("<<<<<<<<<<<<<<<<<" + e.getMessage());
+                    }
+                    type = "MODIFIED";
+                }
+                if (documentChange.getType() == DocumentChange.Type.REMOVED) {
+                    // remove
+
+                    try {
+
+                        String docID = documentChange.getDocument().getId();
+                        int index = IntStream.range(0, reviewList.size())
+                                .filter(i -> reviewList.get(i).getId().equals(docID))
+                                .findFirst()
+                                .orElse(-1);
+                        System.out.println(">>>>> deleted item" + index);
+                        reviewList.remove(index);
+                        adapter.notifyItemRemoved(index);
+                        type = "REMOVED";
+                    } catch (Exception e) {
+                        System.out.println("<<<<<<<<<<<<<<<<<" + e.getMessage());
+                    }
                 }
             }
             updateRating();
-            if (count == 0) {
-                adapter.notifyDataSetChanged();
-            } else {
-                adapter.notifyItemRangeInserted(reviewList.size(), reviewList.size());
+            if (!type.equals("REMOVED")) {
+                if (count == 0) {
+                    adapter.notifyDataSetChanged();
+                } else {
+                    System.out.println("???????????????????????????????????????????????????");
+                    adapter.notifyItemRangeInserted(reviewList.size(), reviewList.size());
+                }
             }
+
         }
 
     };
@@ -128,9 +157,19 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             }
             rating = rating / reviewList.size();
         }
-        ratingTv.setText(rating + "");
+        ratingTv.setText(String.format("%.1f", rating) + "");
         ratingPeoplesTv.setText("From " + reviewList.size() + " people");
         ratingBar.setRating(rating);
     }
 
+    private Review getReviewObject(DocumentChange documentChange) {
+        String reviewUserName = documentChange.getDocument().getData().get("name").toString();
+        String reviewUserId = documentChange.getDocument().getData().get("id").toString();
+        String reviewId = documentChange.getDocument().getId();
+        String reviewComment = documentChange.getDocument().getData().get("comment").toString();
+        String profileUrl = documentChange.getDocument().getData().get("profileUrl").toString();
+        double rating = Double.parseDouble(documentChange.getDocument().getData().get("rating").toString());
+        double reviewRating = Double.parseDouble(documentChange.getDocument().getData().get("reviewRating").toString());
+        return new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
+    }
 }
