@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RestaurantsFragment extends Fragment
-{
+public class RestaurantsFragment extends Fragment {
     private RecyclerViewAdapter adapter;
     private final List<Restaurant> restaurantList = new ArrayList<>();
     private ProgressBar progressBar;
@@ -39,7 +38,6 @@ public class RestaurantsFragment extends Fragment
 
     public RestaurantsFragment() {
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,14 +48,19 @@ public class RestaurantsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resturants, container, false);
-        listenNewRestaurant();
-        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getContext());
+        listenNewRestaurant();      //listen all restaurant in db and also new added restaurant too
 
-        String userId = yourPreference.getData(Constants.userId);
+        //get user id from local storage
+        CustomSharedPreference sharedPreference = CustomSharedPreference.getInstance(getContext());
+        String userId = sharedPreference.getData(Constants.userId);
+
+        //get user data from firebase
         FireStore.getData(userId, users -> {
+            //if user ia admin then show option for adding new restaurant other wise hide the option
             if (users.isAdmin()) {
                 fab.setVisibility(View.VISIBLE);
                 fab.setOnClickListener(view1 -> {
+                    //navigate to AddRestaurantActivity
                     Intent intent = new Intent(getContext(), AddRestaurantActivity.class);
                     startActivity(intent);
                 });
@@ -75,7 +78,7 @@ public class RestaurantsFragment extends Fragment
 
 
     private void listenNewRestaurant() {
-        FireStore.db.collection(Constants.rootCollectionRestaurant).orderBy("restaurantName", Query.Direction.ASCENDING).addSnapshotListener(eventListener);
+        FireStore.db.collection(Constants.rootCollectionRestaurant).orderBy(Constants.restaurantName, Query.Direction.ASCENDING).addSnapshotListener(eventListener);
     }
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
@@ -88,7 +91,7 @@ public class RestaurantsFragment extends Fragment
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
                     String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
                     String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
-                    String name = documentChange.getDocument().getData().get("restaurantName").toString();
+                    String name = documentChange.getDocument().getData().get(Constants.restaurantName).toString();
                     String id = documentChange.getDocument().getData().get(Constants.id).toString();
 
                     Restaurant restaurant = new Restaurant(imageUrl, description, name, id);

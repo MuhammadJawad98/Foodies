@@ -63,17 +63,14 @@ public class ProfileFragment extends Fragment {
         edtPassword = view.findViewById(R.id.passwordEditText_id);
 
         Button btnSubmit = view.findViewById(R.id.btnSubmit_id);
-//        TextView userTypeText = view.findViewById(R.id.userType_id);
-//        TextView tvRatingValue = view.findViewById(R.id.ratingValueText_id);
-//        RatingBar ratingBar = view.findViewById(R.id.review_id);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getContext());
+        //fetching user id from local storage
+        CustomSharedPreference sharedPreference = CustomSharedPreference.getInstance(getContext());
+        String userId = sharedPreference.getData(Constants.userId);
 
-        String userId = yourPreference.getData(Constants.userId);
-
-
+        //gets data of user from firebase and sets into the fields
         FireStore.getData(userId, user -> {
             userData = user;
             CommonFunctions.customLog(userData.getDocumentId());
@@ -84,6 +81,8 @@ public class ProfileFragment extends Fragment {
             Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                     placeholder(R.drawable.placeholder_image).error(R.drawable.error_image).into(imageView);
         });
+
+        //when click on image, open the gallery to pick one image
         imageView.setOnClickListener(view12 -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -138,22 +137,22 @@ public class ProfileFragment extends Fragment {
                 return;
             }
             if (imagePath != null && imageUri != null) {
+                //upload image and then update user data
                 CommonFunctions.uploadImage(imagePath, getContext(), imageUri, new ImageUploadResult() {
                     @Override
                     public void onUploadSuccess(String imageUrl) {
                         User user = new User(firstName, lastName, email, userData.getUserId(), password, imageUrl, userData.isUser(), userData.isCritic(), userData.isAdmin());
 
+                        //update user data
                         FireStore.updateUserData(userData.getDocumentId(), user, new OnResult() {
                             @Override
                             public void onComplete() {
                                 CommonFunctions.showToast("Data Update successfully", getContext());
-
                             }
 
                             @Override
                             public void onFailure() {
                                 CommonFunctions.showToast("Error while updating user data", getContext());
-
                             }
                         });
                     }
@@ -161,11 +160,11 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onUploadFailure() {
                         CommonFunctions.showToast("Error while uploading image", getContext());
-
                     }
                 });
 
             } else {
+                //without image upload update data in firebase
                 User user = new User(firstName, lastName, email, userData.getUserId(), password, userData.getImageUrl(), userData.isUser(), userData.isCritic(), userData.isAdmin());
 
                 FireStore.updateUserData(userData.getDocumentId(), user, new OnResult() {

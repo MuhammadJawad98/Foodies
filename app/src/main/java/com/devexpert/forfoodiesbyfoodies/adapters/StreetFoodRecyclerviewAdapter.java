@@ -26,28 +26,28 @@ import java.util.List;
 
 public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFoodRecyclerviewAdapter.ViewHolder> {
 
-    private final List<StreetFood> mData;
-    private final LayoutInflater mInflater;
+    private final List<StreetFood> streetFoodList;
+    private final LayoutInflater inflater;
     private final Context context;
     private final User user;
 
     public StreetFoodRecyclerviewAdapter(Context context, List<StreetFood> data, User user) {
-        this.mInflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
         this.context = context;
-        this.mData = data;
+        this.streetFoodList = data;
         this.user = user;
     }
 
     @NotNull
     @Override
     public StreetFoodRecyclerviewAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.resturant_item, parent, false);
+        View view = inflater.inflate(R.layout.resturant_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(StreetFoodRecyclerviewAdapter.ViewHolder holder, int position) {
-        StreetFood streetFood = mData.get(position);
+        StreetFood streetFood = streetFoodList.get(position);
         holder.streetFoodTextView.setText(streetFood.getName());
         Picasso.get().load(streetFood.getPicture()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
@@ -55,7 +55,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
         holder.streetFoodViewButton.setOnClickListener(view -> {
             Intent intent = new Intent(context, RestaurantDetailActivity.class);
             intent.putExtra(Constants.from, Constants.streetFoodActivity);
-            intent.putExtra("details",
+            intent.putExtra(Constants.details,
                     new Restaurant(streetFood.getPicture(), streetFood.getDescription(), streetFood.getName(), streetFood.getId()));
             intent.putExtra("userData", user);
             context.startActivity(intent);
@@ -66,7 +66,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return streetFoodList.size();
     }
 
 

@@ -58,10 +58,11 @@ public class StreetFoodFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new StreetFoodRecyclerviewAdapter(getContext(), streetFoodList, userData);
         recyclerView.setAdapter(adapter);
-        listenNewStreetFoodRestaurant();
+        listenNewStreetFoodRestaurant();       //listen all street food entries
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(view1 -> {
+            //navigate to AddStreetFoodActivity
             Intent intent = new Intent(getContext(), AddStreetFoodActivity.class);
             startActivity(intent);
         });
@@ -69,6 +70,7 @@ public class StreetFoodFragment extends Fragment {
         return view;
     }
 
+    //Function for listening all street food restaurant including new one too
     private void listenNewStreetFoodRestaurant() {
         FireStore.db.collection(Constants.rootCollectionStreetFood).orderBy(Constants.name, Query.Direction.ASCENDING)
                 .addSnapshotListener(eventListener);

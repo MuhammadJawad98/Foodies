@@ -59,7 +59,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //Gets data that sends fro previous activity
         Intent intent = getIntent();
-        documentId = intent.getStringExtra("docId");
+        documentId = intent.getStringExtra(Constants.docId);
 
         listenMessage();        //it will listen all the messages including new one too.
 

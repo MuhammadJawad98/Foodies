@@ -13,8 +13,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 
-public class AddReviewDialogue extends Dialog implements
-        android.view.View.OnClickListener {
+public class AddReviewDialogue extends Dialog implements android.view.View.OnClickListener {
 
     public Activity activity;
     public Button btnYes, btnNo;
@@ -53,10 +52,14 @@ public class AddReviewDialogue extends Dialog implements
     public void onClick(View v) {
         if (v.getId() == R.id.btn_yes) {
             String review = edtReview.getText().toString().trim();
-            if (from.equals(Constants.restaurantDetailActivity)) {
-                FireStore.addRestaurantReview(Constants.rootCollectionRestaurant, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
-            } else {
-                FireStore.addRestaurantReview(Constants.rootCollectionStreetFood, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
+            if (from.equals(Constants.restaurantDetailActivity)) {  //comes from restaurant screen
+                //add restaurant review
+                FireStore.addRestaurantReview(Constants.rootCollectionRestaurant, resDocId, review, user.getUserId(),
+                        user.getFirstName(), user.getImageUrl(), ratingValue);
+            } else {        //comes from street food screen
+                //add street food review
+                FireStore.addRestaurantReview(Constants.rootCollectionStreetFood, resDocId, review, user.getUserId(),
+                        user.getFirstName(), user.getImageUrl(), ratingValue);
             }
         }
         dismiss();

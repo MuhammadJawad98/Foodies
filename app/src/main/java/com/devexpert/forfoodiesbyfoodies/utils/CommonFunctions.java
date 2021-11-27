@@ -21,14 +21,17 @@ import java.util.UUID;
 
 public class CommonFunctions {
 
+    //Function for checking email validity
     public static boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    //Function for showing toast
     public static void showToast(String message, Context context) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
+    //Function for hiding keyboard
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -40,6 +43,7 @@ public class CommonFunctions {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    //Function for uploading image to firebase storage
     public static void uploadImage(String imagePath, Context context, Uri imageUri, ImageUploadResult imageUploadResult) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
@@ -69,7 +73,7 @@ public class CommonFunctions {
                             progressDialog.dismiss();
                             imageUploadResult.onUploadFailure();
 
-                            CommonFunctions.showToast("Failed " + e.getMessage(),context);
+                            CommonFunctions.showToast("Failed " + e.getMessage(), context);
                         })
                         .addOnProgressListener(taskSnapshot -> {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
@@ -83,16 +87,19 @@ public class CommonFunctions {
 
     }
 
+    //Function for getting current date time for messages
     public static Date CurrentDateTime() {
         return new Date();
     }
 
+    //Function for converting date object into specific time format (messages)
     public static String convertTime(Date date) {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         return dateFormat.format(date);
     }
 
+    //Function for logs
     public static void customLog(String message) {
         Log.d("FFBF Log: ", message);
     }

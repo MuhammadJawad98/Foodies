@@ -23,38 +23,37 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private final List<Restaurant> mData;
-    private final LayoutInflater mInflater;
+    private final List<Restaurant> restaurantList;
+    private final LayoutInflater inflater;
     private final Context context;
-    private ItemClickListener mClickListener;
 
     // data is passed into the constructor
     public RecyclerViewAdapter(Context context, List<Restaurant> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.context=context;
-        this.mData = data;
+        this.inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.restaurantList = data;
     }
 
     // inflates the row layout from xml when needed
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.resturant_item, parent, false);
+        View view = inflater.inflate(R.layout.resturant_item, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Restaurant restaurant = mData.get(position);
+        Restaurant restaurant = restaurantList.get(position);
         holder.restaurantTextView.setText(restaurant.getRestaurantDescription());
         Picasso.get().load(restaurant.getRestaurantImageUrl()).fit().centerCrop().
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.restaurantImageView);
         holder.detailsViewButton.setOnClickListener(view -> {
-            Intent intent=new Intent(context, RestaurantDetailActivity.class);
+            Intent intent = new Intent(context, RestaurantDetailActivity.class);
             intent.putExtra(Constants.from, Constants.restaurantDetailActivity);
-            intent.putExtra("details",restaurant);
+            intent.putExtra(Constants.details, restaurant);
             context.startActivity(intent);
         });
     }
@@ -62,12 +61,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return restaurantList.size();
     }
 
-
-    // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    // stores and recycler views as they are scrolled off screen
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView restaurantTextView;
         ImageView restaurantImageView;
         Button detailsViewButton;
@@ -77,17 +75,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             restaurantTextView = itemView.findViewById(R.id.restaurantDescriptionTextView_id);
             restaurantImageView = itemView.findViewById(R.id.restaurantImageView_id);
             detailsViewButton = itemView.findViewById(R.id.btnRestaurantView_id);
-            itemView.setOnClickListener(this);
         }
-
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-        }
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

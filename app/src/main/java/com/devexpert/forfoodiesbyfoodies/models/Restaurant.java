@@ -10,22 +10,11 @@ public class Restaurant implements Serializable {
     private List<Review> restaurantReview;
     private String id;
 
-    public Restaurant(String restaurantImageUrl, String restaurantDescription) {
-        this.restaurantImageUrl = restaurantImageUrl;
-        this.restaurantDescription = restaurantDescription;
-    }
-    public Restaurant(String restaurantImageUrl, String restaurantDescription, String restaurantName,String id) {
+    public Restaurant(String restaurantImageUrl, String restaurantDescription, String restaurantName, String id) {
         this.restaurantImageUrl = restaurantImageUrl;
         this.restaurantDescription = restaurantDescription;
         this.restaurantName = restaurantName;
-        this.id=id;
-    }
-    public Restaurant(String restaurantImageUrl, String restaurantDescription, String restaurantName,String id,  List<Review> restaurantReview) {
-        this.restaurantImageUrl = restaurantImageUrl;
-        this.restaurantDescription = restaurantDescription;
-        this.restaurantName = restaurantName;
-        this.restaurantReview = restaurantReview;
-        this.id=id;
+        this.id = id;
     }
 
     public String getId() {
@@ -59,8 +48,6 @@ public class Restaurant implements Serializable {
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
     }
-
-
 
     public List<Review> getRestaurantReview() {
         return restaurantReview;

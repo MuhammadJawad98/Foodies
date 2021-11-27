@@ -24,6 +24,7 @@ import java.util.Map;
 public class FireStore {
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    //Function for add data of user to firebase
     public static void addUserToFireStore(User user) {
         // Add a new document with a generated ID
         db.collection(Constants.rootCollectionUsers)
@@ -35,11 +36,13 @@ public class FireStore {
     }
 
 
+    //Function for get current user uuid
     public static String getCurrentUserUUid() {
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         return currentFirebaseUser.getUid();
     }
 
+    //Function for get complete user data
     public static void getData(String userId, FirebaseUserDataResult resultListener) {
         db.collection(Constants.rootCollectionUsers)
                 .whereEqualTo(Constants.userId, userId)
@@ -66,9 +69,10 @@ public class FireStore {
 
     }
 
+    //Function for add rating of specific restaurant
     public static void addRating(String rootCollection, String restaurantId, String reviewId, float rating, Context context) {
-        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(context);
-        String userId = yourPreference.getData(Constants.userId);
+        CustomSharedPreference sharedPreference = CustomSharedPreference.getInstance(context);
+        String userId = sharedPreference.getData(Constants.userId);
         Map<String, Object> data = new HashMap<>();
         data.put(Constants.userId, userId);
         data.put(Constants.rating, rating);
@@ -78,13 +82,14 @@ public class FireStore {
         rateReview(rootCollection, restaurantId, reviewId, rating);
     }
 
-
+    //Function for adding new street food stall
     public static void addStreetFoodStall(StreetFood streetFood, OnResult onResult) {
         db.collection(Constants.rootCollectionStreetFood).add(streetFood).addOnSuccessListener(documentReference ->
                 onResult.onComplete()).
                 addOnFailureListener(e -> onResult.onFailure());
     }
 
+    //Function for update user data
     public static void updateUserData(String documentId, User user, OnResult onResult) {
         db.collection(Constants.rootCollectionUsers).
                 document(documentId).
@@ -93,6 +98,7 @@ public class FireStore {
                 addOnFailureListener(e -> onResult.onFailure());
     }
 
+    //Function for update the rating
     public static void rateReview(String rootCollection, String restaurantDocId, String reviewDocId, float rate) {
         try {
             DocumentReference snapshot =
@@ -118,6 +124,7 @@ public class FireStore {
         }
     }
 
+    //Function for add new restaurant
     public static void addRestaurant(String restaurantImageUrl, String restaurantDescription, String restaurantName) {
         DocumentReference snapshot = db.collection(Constants.rootCollectionRestaurant).document();
         String id = snapshot.getId();
@@ -128,6 +135,7 @@ public class FireStore {
                         CommonFunctions.customLog("Restaurant: Fail to added restaurant"));
     }
 
+    //Function for add restaurant review
     public static void addRestaurantReview(String rootCollection, String documentPath, String comment, String id, String name, String profileUrl, float rating) {
         Map<String, Object> data = new HashMap<>();
         data.put(Constants.comment, comment);
@@ -142,7 +150,7 @@ public class FireStore {
                 addOnFailureListener(e -> CommonFunctions.customLog("Add review to res Fail to added"));
     }
 
-
+    //Function for send message
     public static void sendMessage(String docId, Chat chat) {
         db.collection(Constants.rootCollectionChannels).document(docId).collection(Constants.messages).add(chat).
                 addOnSuccessListener(documentReference ->
@@ -151,6 +159,7 @@ public class FireStore {
                 CommonFunctions.customLog("Message Creation: message sending fail"));
     }
 
+    //Function for creating new chat topic
     public static void createNewTopic(String topic) {
         String id = db.collection(Constants.rootCollectionChannels).document().getId();
         Channels channel = new Channels(id, topic);

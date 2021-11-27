@@ -53,9 +53,7 @@ public class CustomDialogClass extends Dialog implements android.view.View.OnCli
                 }
                 break;
             case R.id.btn_no:
-                dismiss();
-                break;
-            default:
+                dismiss();      //close dialogue
                 break;
         }
         dismiss();

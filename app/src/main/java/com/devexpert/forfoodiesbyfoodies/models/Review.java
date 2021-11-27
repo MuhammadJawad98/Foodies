@@ -24,18 +24,6 @@ public class Review implements Serializable {
         this.reviewRating = reviewRating;
     }
 
-    public Review(String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, double reviewRating) {
-        this.name = name;
-        this.lastName = lastName;
-        this.id = id;
-        this.userId = userId;
-        this.comment = comment;
-        this.profileUrl = profileUrl;
-        this.email = email;
-        this.rating = rating;
-        this.reviewRating = reviewRating;
-    }
-
     public String getEmail() {
         return email;
     }

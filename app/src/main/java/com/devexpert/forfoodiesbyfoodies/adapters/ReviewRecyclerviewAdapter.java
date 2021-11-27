@@ -27,19 +27,19 @@ import java.util.List;
 
 public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecyclerviewAdapter.ViewHolder> {
 
-    private final List<Review> mData;
-    private final LayoutInflater mInflater;
+    private final List<Review> reviewList;
+    private final LayoutInflater inflater;
     private final Context context;
-    private ItemClickListener mClickListener;
-    private CustomSharedPreference yourPreference;
+    private ItemClickListener clickListener;
+    private CustomSharedPreference sharedPreference;
     private final String from;
     private final String restaurantId;
     private final boolean isAdmin;
 
     public ReviewRecyclerviewAdapter(Context context, List<Review> data, String from, String restaurantId, boolean isAdmin) {
-        this.mInflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
         this.context = context;
-        this.mData = data;
+        this.reviewList = data;
         this.from = from;
         this.restaurantId = restaurantId;
         this.isAdmin = isAdmin;
@@ -48,15 +48,15 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.reviews_items, parent, false);
-        yourPreference = CustomSharedPreference.getInstance(this.context);
+        View view = inflater.inflate(R.layout.reviews_items, parent, false);
+        sharedPreference = CustomSharedPreference.getInstance(this.context);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Review review = mData.get(position);
-        String userId = yourPreference.getData(Constants.userId);
+        Review review = reviewList.get(position);
+        String userId = sharedPreference.getData(Constants.userId);
 
         holder.nameTv.setText(review.getName());
         holder.commentTv.setText(review.getComment());
@@ -71,9 +71,9 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
                 holder.imageViewDelete.setVisibility(View.VISIBLE);
             }
         }
-
         holder.imageViewDelete.setOnClickListener(view -> {
             try {
+                //deleting user review on specific street food item
                 FireStore.db.collection(Constants.rootCollectionStreetFood).document(restaurantId).collection(Constants.reviews).document(review.getId()).delete();
             } catch (Exception e) {
                 CommonFunctions.customLog(e.getMessage());
@@ -81,20 +81,20 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         });
         holder.imageView.setOnClickListener(view -> {
             try {
+                //Navigate to other user profile
                 Intent intent = new Intent(context, OtherUserProfileActivity.class);
-                intent.putExtra("details", review);
+                intent.putExtra(Constants.details, review);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } catch (Exception e) {
-                System.out.println("error::::" + e.toString());
+                CommonFunctions.customLog("Error: "+ e.toString());
             }
-
         });
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return reviewList.size();
     }
 
 
@@ -117,13 +117,13 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            if (clickListener != null) clickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
 
     public void setClickListener(ReviewRecyclerviewAdapter.ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
+        this.clickListener = itemClickListener;
     }
 
     public interface ItemClickListener {

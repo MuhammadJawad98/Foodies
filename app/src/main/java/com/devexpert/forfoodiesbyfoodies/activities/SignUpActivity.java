@@ -26,18 +26,19 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView loginTextView;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
-    private final CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
+    private CustomSharedPreference sharedPreference ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         initView();
+        sharedPreference = CustomSharedPreference.getInstance(getApplicationContext());
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        signUpButton.setOnClickListener(view -> signUp());
-        loginTextView.setOnClickListener(view -> finish());
+        signUpButton.setOnClickListener(view -> signUp());      //for signUp
+        loginTextView.setOnClickListener(view -> finish());     // go back to login screen
     }
 
     //initializing view
@@ -52,7 +53,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    //Function for signup
+    //Function for signUp
     void signUp() {
         String firstName = firstNameField.getText().toString().trim();
         String lastName = lastNameField.getText().toString().trim();
@@ -77,26 +78,22 @@ public class SignUpActivity extends AppCompatActivity {
                                 } else {
                                     User user = new User(firstName, lastName, email, task.getResult().getUser().getUid(), password, Constants.defaultImageUrl,
                                             true, false, false);
+                                    //after signUp save data to firebase
                                     FireStore.addUserToFireStore(user);
-                                    yourPreference.saveData(Constants.userId, task.getResult().getUser().getUid());
-
-
+                                    //save user uuid in local device
+                                    sharedPreference.saveData(Constants.userId, task.getResult().getUser().getUid());
                                     CommonFunctions.showToast("Login Successful.", getApplicationContext());
+                                    //navigate to Dashboard screen
                                     startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
                                     finish();
                                 }
                             });
-
                     CommonFunctions.showToast("Successfully SignUp", getApplicationContext());
-
                 } else {
                     CommonFunctions.showToast("Password should contain at-least 8 characters.", getApplicationContext());
-
                 }
             } else {
                 CommonFunctions.showToast("Email is not valid", getApplicationContext());
-
-
             }
         }
     }

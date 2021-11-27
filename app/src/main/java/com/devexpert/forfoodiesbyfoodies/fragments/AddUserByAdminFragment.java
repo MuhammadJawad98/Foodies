@@ -58,11 +58,12 @@ public class AddUserByAdminFragment extends Fragment {
             }
             CommonFunctions.customLog("isCritics: " + isCritic + " isAdmin: " + isAdmin);
         });
-        btnSubmit.setOnClickListener(view1 -> createAnAccount());
+        btnSubmit.setOnClickListener(view1 -> createAnAccount());       //create an account
 
         return view;
     }
 
+    //Function for creating an account
     void createAnAccount() {
         String firstName = edtFirstName.getText().toString().trim();
         String lastName = edtLastName.getText().toString().trim();
@@ -70,7 +71,6 @@ public class AddUserByAdminFragment extends Fragment {
         String password = edtPassword.getText().toString().trim();
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             CommonFunctions.showToast("Please fill the data properly.", getContext());
-
         } else {
             if (CommonFunctions.isEmailValid(email)) {
 
@@ -85,8 +85,8 @@ public class AddUserByAdminFragment extends Fragment {
                         if (!task.isSuccessful()) {
                             CommonFunctions.showToast("Error while creating account!", getContext());
                         } else {
-                            User user = new User(firstName, lastName, email, task.getResult().getUser().getUid(), password, Constants.defaultImageUrl,
-                                    false, isCritic, isAdmin);
+                            User user = new User(firstName, lastName, email, task.getResult().getUser().getUid(),
+                                    password, Constants.defaultImageUrl, false, isCritic, isAdmin);
                             FireStore.addUserToFireStore(user);
                             edtFirstName.setText("");
                             edtLastName.setText("");
@@ -108,5 +108,4 @@ public class AddUserByAdminFragment extends Fragment {
             }
         }
     }
-
 }

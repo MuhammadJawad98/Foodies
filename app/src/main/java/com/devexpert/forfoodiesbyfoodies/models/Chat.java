@@ -20,13 +20,6 @@ public class Chat {
         this.userName = userName;
     }
 
-    public Chat(String text, Date timestamp, String userId, String userName, String messageId) {
-        this.text = text;
-        this.timestamp = timestamp;
-        this.userId = userId;
-        this.userName = userName;
-        this.messageId = messageId;
-    }
 
     public String getMessageId() {
         return messageId;

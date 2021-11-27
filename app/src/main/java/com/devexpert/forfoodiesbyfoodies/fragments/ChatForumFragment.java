@@ -34,10 +34,7 @@ public class ChatForumFragment extends Fragment {
     private ChannelsAdapter adapter;
     private final List<Channels> channelsList = new ArrayList<>();
 
-
-    public ChatForumFragment() {
-    }
-
+    public ChatForumFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,17 +43,16 @@ public class ChatForumFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat_forum, container, false);
         recyclerView = view.findViewById(R.id.channel_recyclerview_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         adapter = new ChannelsAdapter(getContext(), channelsList);
         recyclerView.setAdapter(adapter);
+        //for creating new chat channel
         FloatingActionButton actionButton = view.findViewById(R.id.fab_addChannels);
         listenNewChannels();
-
 
         actionButton.setOnClickListener(view1 -> openDialogue());
         return view;
@@ -90,6 +86,7 @@ public class ChatForumFragment extends Fragment {
         }
     };
 
+    //show dialogue when click on floating action buton to create a chat channel
     private void openDialogue() {
         final EditText taskEditText = new EditText(getContext());
         AlertDialog dialog = new AlertDialog.Builder(getContext())
