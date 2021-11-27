@@ -16,9 +16,8 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.AddRestaurantActivity;
 import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
-import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentChange;
@@ -37,7 +36,6 @@ public class RestaurantsFragment extends Fragment
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
-    private User user;
 
     public RestaurantsFragment() {
     }
@@ -53,12 +51,10 @@ public class RestaurantsFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resturants, container, false);
         listenNewRestaurant();
-        YourPreference yourPreference = YourPreference.getInstance(getContext());
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getContext());
 
-        String userId = yourPreference.getData("userId");
+        String userId = yourPreference.getData(Constants.userId);
         FireStore.getData(userId, users -> {
-            user = users;
-            System.out.println("User Data: " + user.getFirstName() + "  " + user.isUser() + " " + user.isCritic() + " " + user.isAdmin());
             if (users.isAdmin()) {
                 fab.setVisibility(View.VISIBLE);
                 fab.setOnClickListener(view1 -> {
@@ -93,7 +89,7 @@ public class RestaurantsFragment extends Fragment
                     String imageUrl = documentChange.getDocument().getData().get("restaurantImageUrl").toString();
                     String description = documentChange.getDocument().getData().get("restaurantDescription").toString();
                     String name = documentChange.getDocument().getData().get("restaurantName").toString();
-                    String id = documentChange.getDocument().getData().get("id").toString();
+                    String id = documentChange.getDocument().getData().get(Constants.id).toString();
 
                     Restaurant restaurant = new Restaurant(imageUrl, description, name, id);
                     restaurantList.add(restaurant);

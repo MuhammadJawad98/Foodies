@@ -34,6 +34,8 @@ public class AddRestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_restaurant);
         initView();
+
+        //when click on image view it open the gallery to select an image
         imageView.setOnClickListener(view -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -41,6 +43,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
             someActivityResultLauncher.launch(intent);
         });
 
+        //after selecting image from gallery this will return you the result (image path)
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -67,6 +70,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     }
 
+    //initializing view
     void initView() {
         imageView = findViewById(R.id.userImageView_id);
         edtRestaurantName = findViewById(R.id.edtRestaurantName_id);
@@ -74,6 +78,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit_id);
     }
 
+    //First check data is filled and then upload data to firebase
     void onSubmitData() {
         String name = edtRestaurantName.getText().toString().trim();
         String description = edtRestaurantDescp.getText().toString().trim();

@@ -20,6 +20,7 @@ import com.devexpert.forfoodiesbyfoodies.adapters.StreetFoodRecyclerviewAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -69,7 +70,7 @@ public class StreetFoodFragment extends Fragment {
     }
 
     private void listenNewStreetFoodRestaurant() {
-        FireStore.db.collection("street_food").orderBy("name", Query.Direction.ASCENDING)
+        FireStore.db.collection(Constants.rootCollectionStreetFood).orderBy(Constants.name, Query.Direction.ASCENDING)
                 .addSnapshotListener(eventListener);
         progressBar.setVisibility(View.GONE);
 
@@ -86,10 +87,10 @@ public class StreetFoodFragment extends Fragment {
                     StreetFood streetFood = new StreetFood();
                     streetFood.setDescription(documentChange.getDocument().get("description").toString());
                     streetFood.setLocation(documentChange.getDocument().get("location").toString());
-                    streetFood.setName(documentChange.getDocument().get("name").toString());
+                    streetFood.setName(documentChange.getDocument().get(Constants.name).toString());
                     streetFood.setPicture(documentChange.getDocument().get("picture").toString());
                     streetFood.setType(documentChange.getDocument().get("type").toString());
-                    streetFood.setUserId(documentChange.getDocument().get("userId").toString());
+                    streetFood.setUserId(documentChange.getDocument().get(Constants.userId).toString());
                     streetFood.setId(documentChange.getDocument().getId());
                     streetFoodList.add(streetFood);
                 }

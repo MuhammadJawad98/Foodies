@@ -54,7 +54,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
                 .error(R.drawable.error_image).into(holder.streetFoodImageView);
         holder.streetFoodViewButton.setOnClickListener(view -> {
             Intent intent = new Intent(context, RestaurantDetailActivity.class);
-            intent.putExtra("from", Constants.streetFoodActivity);
+            intent.putExtra(Constants.from, Constants.streetFoodActivity);
             intent.putExtra("details",
                     new Restaurant(streetFood.getPicture(), streetFood.getDescription(), streetFood.getName(), streetFood.getId()));
             intent.putExtra("userData", user);

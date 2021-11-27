@@ -23,8 +23,9 @@ import com.devexpert.forfoodiesbyfoodies.interfaces.ImageUploadResult;
 import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -44,7 +45,6 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -69,14 +69,14 @@ public class ProfileFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        YourPreference yourPreference = YourPreference.getInstance(getContext());
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getContext());
 
-        String userId = yourPreference.getData("userId");
+        String userId = yourPreference.getData(Constants.userId);
 
 
         FireStore.getData(userId, user -> {
             userData = user;
-            System.out.println("document id::: " + userData.getDocumentId());
+            CommonFunctions.customLog(userData.getDocumentId());
             edtEmail.setText(user.getEmail());
             edtName.setText(user.getFirstName());
             edtLastName.setText(user.getLastName());
@@ -171,13 +171,11 @@ public class ProfileFragment extends Fragment {
                 FireStore.updateUserData(userData.getDocumentId(), user, new OnResult() {
                     @Override
                     public void onComplete() {
-                        System.out.println(">>>>>>>>>>>> success");
-                        CommonFunctions.showToast("dat save successfully", getContext());
+                        CommonFunctions.showToast("Data save successfully", getContext());
                     }
 
                     @Override
                     public void onFailure() {
-                        System.out.println(">>>>>>>>>>>> failure");
                         CommonFunctions.showToast("Something went wrong", getContext());
                     }
                 });

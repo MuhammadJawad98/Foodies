@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .error(R.drawable.error_image).into(holder.restaurantImageView);
         holder.detailsViewButton.setOnClickListener(view -> {
             Intent intent=new Intent(context, RestaurantDetailActivity.class);
-            intent.putExtra("from", Constants.restaurantDetailActivity);
+            intent.putExtra(Constants.from, Constants.restaurantDetailActivity);
             intent.putExtra("details",restaurant);
             context.startActivity(intent);
         });

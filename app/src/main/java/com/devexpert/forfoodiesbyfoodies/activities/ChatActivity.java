@@ -17,8 +17,9 @@ import com.devexpert.forfoodiesbyfoodies.adapters.ChatAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Chat;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.Query;
@@ -42,9 +43,10 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
-        String userId = yourPreference.getData("userId");
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
+        String userId = yourPreference.getData(Constants.userId);
 
+        //initializing view
         editText = findViewById(R.id.edt_message_id);
         Button btnSendMessage = findViewById(R.id.btnSend_id);
         recyclerView = findViewById(R.id.chat_recyclerview);
@@ -52,34 +54,37 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ChatAdapter(chatMessages, userId);
         recyclerView.setAdapter(adapter);
 
-
+        //get user data from firestore
         FireStore.getData(userId, user -> userData = user);
 
+        //Gets data that sends fro previous activity
         Intent intent = getIntent();
         documentId = intent.getStringExtra("docId");
 
-        listenMessage();
+        listenMessage();        //it will listen all the messages including new one too.
 
 
-        btnSendMessage.setOnClickListener(view -> sendMessage());
+        btnSendMessage.setOnClickListener(view -> sendMessage());       //click to send message
     }
 
     void sendMessage() {
         String msg = editText.getText().toString().trim();
-        if (msg.isEmpty()) {
+        if (msg.isEmpty()) {        //check is message is empty or not
             CommonFunctions.showToast("Type something!", getApplicationContext());
             return;
         }
+        //if message is not empty then send it to firestore
         Chat chat = new Chat(msg, CommonFunctions.CurrentDateTime(), userData.getUserId(), userData.getFirstName());
-        editText.setText("");
         FireStore.sendMessage(documentId, chat);
+        editText.setText("");       //after sending message clear edit text
     }
 
+    //method for listening all messages also new one too
     private void listenMessage() {
-        FireStore.db.collection("channels").document(documentId).collection("messages").orderBy("timestamp", Query.Direction.ASCENDING).addSnapshotListener(eventListener);
-
+        FireStore.db.collection(Constants.rootCollectionChannels).document(documentId).collection(Constants.messages).orderBy("timestamp", Query.Direction.ASCENDING).addSnapshotListener(eventListener);
     }
 
+    //return all messages
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
             return;
@@ -88,18 +93,16 @@ public class ChatActivity extends AppCompatActivity {
             int count = chatMessages.size();
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                    System.out.println(">>>>>>>>>>>>>>>>>>" + documentChange.getDocument().get("text").toString());
                     Chat chat = new Chat();
                     chat.setText(documentChange.getDocument().get("text").toString());
                     Date creationDate = documentChange.getDocument().getDate("timestamp");
                     chat.setTimestamp(creationDate);
-                    chat.setUserId(documentChange.getDocument().get("userId").toString());
+                    chat.setUserId(documentChange.getDocument().get(Constants.userId).toString());
                     chat.setUserName(documentChange.getDocument().get("userName").toString());
                     chat.setMessageId(documentChange.getDocument().getId());
                     chatMessages.add(chat);
                 }
             }
-//            Collections.sort(chatMessages, (obj1, obj2) -> obj1.getMessageId().compareTo(obj2.getMessageId()));
             if (count == 0) {
                 if (chatMessages.size() > 0) {
                     recyclerView.smoothScrollToPosition(chatMessages.size() - 1);

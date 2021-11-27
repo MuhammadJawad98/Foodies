@@ -15,7 +15,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.OtherUserProfileActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
@@ -31,7 +31,7 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
     private final LayoutInflater mInflater;
     private final Context context;
     private ItemClickListener mClickListener;
-    private YourPreference yourPreference;
+    private CustomSharedPreference yourPreference;
     private final String from;
     private final String restaurantId;
     private final boolean isAdmin;
@@ -49,14 +49,14 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.reviews_items, parent, false);
-        yourPreference = YourPreference.getInstance(this.context);
+        yourPreference = CustomSharedPreference.getInstance(this.context);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Review review = mData.get(position);
-        String userId = yourPreference.getData("userId");
+        String userId = yourPreference.getData(Constants.userId);
 
         holder.nameTv.setText(review.getName());
         holder.commentTv.setText(review.getComment());
@@ -74,7 +74,7 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
 
         holder.imageViewDelete.setOnClickListener(view -> {
             try {
-                FireStore.db.collection("street_food").document(restaurantId).collection("reviews").document(review.getId()).delete();
+                FireStore.db.collection(Constants.rootCollectionStreetFood).document(restaurantId).collection(Constants.reviews).document(review.getId()).delete();
             } catch (Exception e) {
                 CommonFunctions.customLog(e.getMessage());
             }

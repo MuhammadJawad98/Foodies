@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -12,6 +11,8 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -26,20 +27,19 @@ public class OtherUserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_other_user_profile);
         initView();
         Intent intent = getIntent();
-        Review review = (Review) intent.getSerializableExtra("details");
-        FireStore.db.collection("users").whereEqualTo("userId",
+        Review review = (Review) intent.getSerializableExtra(Constants.details);
+        FireStore.db.collection(Constants.rootCollectionUsers).whereEqualTo(Constants.userId,
                 review.getUserId()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Log.d("TAG", document.getId() + " => " + document.getData());
-                    user = new User(document.getData().get("firstName").toString(),
-                            document.getData().get("lastName").toString(),
-                            document.getData().get("email").toString(),
-                            document.getData().get("userId").toString(),
-                            document.getData().get("imageUrl").toString(),
-                            Boolean.parseBoolean(document.getData().get("user").toString()),
-                            Boolean.parseBoolean(document.getData().get("critic").toString()),
-                            Boolean.parseBoolean(document.getData().get("admin").toString()));
+                    user = new User(document.getData().get(Constants.firstName).toString(),
+                            document.getData().get(Constants.lastName).toString(),
+                            document.getData().get(Constants.email).toString(),
+                            document.getData().get(Constants.userId).toString(),
+                            document.getData().get(Constants.imageUrl).toString(),
+                            Boolean.parseBoolean(document.getData().get(Constants.user).toString()),
+                            Boolean.parseBoolean(document.getData().get(Constants.critic).toString()),
+                            Boolean.parseBoolean(document.getData().get(Constants.admin).toString()));
                 }
                 Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                         placeholder(R.drawable.placeholder_image)
@@ -49,13 +49,12 @@ public class OtherUserProfileActivity extends AppCompatActivity {
                 edtLastName.setText(user.getLastName());
                 edtEmail.setText(user.getEmail());
             } else {
-                Log.d("TAG", "Error getting documents: ", task.getException());
+                CommonFunctions.customLog("Error getting documents: "+ task.getException());
             }
         });
-
-
     }
 
+    //initializing view
     void initView() {
         userImageView = findViewById(R.id.userImageView_id);
         edtFirstName = findViewById(R.id.nameEditText_id);

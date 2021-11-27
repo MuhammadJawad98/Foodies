@@ -9,7 +9,8 @@ import android.view.WindowManager;
 
 import com.devexpert.forfoodiesbyfoodies.activities.DashBoardActivity;
 import com.devexpert.forfoodiesbyfoodies.activities.LoginActivity;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 
 public class SplashScreen extends AppCompatActivity {
     Handler handler;
@@ -19,9 +20,9 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
 
-        String value = yourPreference.getData("userId");
+        String value = yourPreference.getData(Constants.userId);
 
 
         handler = new Handler();

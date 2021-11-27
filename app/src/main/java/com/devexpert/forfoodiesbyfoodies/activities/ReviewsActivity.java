@@ -20,6 +20,7 @@ import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.google.firebase.firestore.DocumentChange;
@@ -48,33 +49,37 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         setContentView(R.layout.activity_reviews);
         initView();
 
-
+        //get data from previous screen
         Intent intent = getIntent();
-        restaurant = (Restaurant) intent.getSerializableExtra("details");
-        String from = intent.getExtras().getString("from");
-        User user = (User) intent.getSerializableExtra("user");
+        restaurant = (Restaurant) intent.getSerializableExtra(Constants.details);
+        String from = intent.getExtras().getString(Constants.from);
+        User user = (User) intent.getSerializableExtra(Constants.user);
 
-        if (from.equals(Constants.restaurantDetailActivity)) {
+        if (from.equals(Constants.restaurantDetailActivity)) {      //check if comes from restaurant detail activity
             rootCollection = Constants.rootCollectionRestaurant;
         } else {
+            //it means it comes from street food detail activity
             rootCollection = Constants.rootCollectionStreetFood;
-
         }
+        //adapter
         adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList, from, restaurant.getId(), user.isAdmin());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
-        listenNewReview(rootCollection, restaurant.getId());
+        listenNewReview(rootCollection, restaurant.getId());            //listening for new and update review
 
 
     }
 
+    //on item click show a dialog for rating the review
     @Override
     public void onItemClick(View view, int position) {
+        //dialogue for set rating to specific review
         CustomDialogClass cdd = new CustomDialogClass(this, reviewList.get(position).getId(), restaurant.getId(), rootCollection);
         cdd.show();
     }
 
 
+    //initialize view
     void initView() {
         ratingTv = findViewById(R.id.ratingTv_id);
         ratingPeoplesTv = findViewById(R.id.ratingPeopleTv_id);
@@ -82,11 +87,11 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         recyclerView = findViewById(R.id.reviewRecyclerview_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-
     }
 
+    //listening the review add and update
     private void listenNewReview(String rootCollection, String documentId) {
-        FireStore.db.collection(rootCollection).document(documentId).collection("reviews").addSnapshotListener(eventListener);
+        FireStore.db.collection(rootCollection).document(documentId).collection(Constants.reviews).addSnapshotListener(eventListener);
     }
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
@@ -95,7 +100,6 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         }
         if (value != null) {
             String type = "";
-
             int count = reviewList.size();
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
@@ -111,23 +115,21 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
                         reviewList.set(index, getReviewObject(documentChange));
                         adapter.notifyItemChanged(index);
                     } catch (Exception e) {
-                        System.out.println("<<<<<<<<<<<<<<<<<" + e.getMessage());
+                        CommonFunctions.customLog(e.getMessage());
                     }
                     type = "MODIFIED";
                 }
                 if (documentChange.getType() == DocumentChange.Type.REMOVED) {
                     // remove
-
                     try {
-
                         String docID = documentChange.getDocument().getId();
-                        System.out.println(">>>>> deleted item" + getItemIndex(docID));
+                        CommonFunctions.customLog("Deleted item" + getItemIndex(docID));
                         int index = getItemIndex(docID);
                         reviewList.remove(index);
                         adapter.notifyItemRemoved(index);
                         type = "REMOVED";
                     } catch (Exception e) {
-                        System.out.println("<<<<<<<<<<<<<<<<<" + e.getMessage());
+                        CommonFunctions.customLog("Error while Deleted item" + e.getMessage());
                     }
                 }
             }
@@ -144,6 +146,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
     };
 
+    //updating review rating when new review added or remove any review
     @SuppressLint("DefaultLocale")
     public void updateRating() {
         float rating = 0;
@@ -154,19 +157,20 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             rating = rating / reviewList.size();
         }
         ratingTv.setText(String.format("%.1f", rating));
-        String from="From ";
+        String from = "From ";
         ratingPeoplesTv.setText(from.concat(reviewList.size() + " people"));
         ratingBar.setRating(rating);
     }
 
+    //create review object from data that comes form firestore
     private Review getReviewObject(DocumentChange documentChange) {
-        String reviewUserName = documentChange.getDocument().getData().get("name").toString();
-        String reviewUserId = documentChange.getDocument().getData().get("id").toString();
+        String reviewUserName = documentChange.getDocument().getData().get(Constants.name).toString();
+        String reviewUserId = documentChange.getDocument().getData().get(Constants.id).toString();
         String reviewId = documentChange.getDocument().getId();
-        String reviewComment = documentChange.getDocument().getData().get("comment").toString();
-        String profileUrl = documentChange.getDocument().getData().get("profileUrl").toString();
-        double rating = Double.parseDouble(documentChange.getDocument().getData().get("rating").toString());
-        double reviewRating = Double.parseDouble(documentChange.getDocument().getData().get("reviewRating").toString());
+        String reviewComment = documentChange.getDocument().getData().get(Constants.comment).toString();
+        String profileUrl = documentChange.getDocument().getData().get(Constants.profileUrl).toString();
+        double rating = Double.parseDouble(documentChange.getDocument().getData().get(Constants.rating).toString());
+        double reviewRating = Double.parseDouble(documentChange.getDocument().getData().get(Constants.reviewRating).toString());
         return new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
     }
 

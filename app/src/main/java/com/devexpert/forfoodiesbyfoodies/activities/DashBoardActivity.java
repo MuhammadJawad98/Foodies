@@ -22,15 +22,16 @@ import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 
 public class DashBoardActivity extends AppCompatActivity {
-    DrawerLayout dLayout;
-    TextView textViewName;
-    ImageView imageView;
+    private DrawerLayout dLayout;
+    private TextView textViewName;
+    private ImageView imageView;
     private User userData;
     private Menu menu;
 
@@ -39,25 +40,20 @@ public class DashBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
 
+        //get userId from sharedPreference
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
+        String userId = yourPreference.getData(Constants.userId);
 
-        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
-
-        String userId = yourPreference.getData("userId");
-
-
+        //gets user data from firestore
         FireStore.getData(userId, user -> {
             userData = user;
-//                name=user.getFirstName();
-
             if (user.getFirstName().isEmpty()) {
                 textViewName.setText(R.string.user_name);
-
             } else {
                 textViewName.setText(user.getFirstName().concat(" ").concat(user.getLastName()));
                 Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                         placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.error_image).into(imageView);
-
                 if (userData.isAdmin()) {
                     menu.setGroupCheckable(R.id.second_group, true, true);
                     menu.setGroupVisible(R.id.second_group, true);
@@ -65,6 +61,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
             }
         });
+        //set drawer (left side menu)
         setNavigationDrawer(); // call method
     }
 
@@ -85,13 +82,13 @@ public class DashBoardActivity extends AppCompatActivity {
         textViewName = headerView.findViewById(R.id.name);
         imageView = headerView.findViewById(R.id.profile_image);
 
-        loadFragment(new RestaurantsFragment());
+        loadFragment(new RestaurantsFragment());        //default fragment is Restaurant fragment
         menu = navView.getMenu();
 
 
         // implement setNavigationItemSelectedListener event on NavigationView
         navView.setNavigationItemSelectedListener(menuItem -> {
-            Fragment frag ; // create a Fragment Object
+            Fragment frag; // create a Fragment Object
             int itemId = menuItem.getItemId(); // get selected menu item's id
             // check selected menu item's id and replace a Fragment Accordingly
             if (itemId == R.id.restaurantFragment_id) {
@@ -107,8 +104,6 @@ public class DashBoardActivity extends AppCompatActivity {
             } else {
                 frag = new RestaurantsFragment();
             }
-            // display a toast message with menu item's title
-//            Toast.makeText(getApplicationContext(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
             loadFragment(frag);
             return false;
         });
@@ -121,15 +116,15 @@ public class DashBoardActivity extends AppCompatActivity {
         dLayout.closeDrawers(); // close the all open Drawer Views
 
     }
+
     @Override
     public void onBackPressed() {
+        //when you click back on dashboard it will ask you to exist or not
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setTitle("Alert");
         builder.setMessage("Do you want to Exist? ");
         builder.setPositiveButton("Yes", (dialog, id) -> finish());
         builder.setNegativeButton("No", (dialog, id) -> {
-
         });
         builder.show();
     }

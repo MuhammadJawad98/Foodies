@@ -19,6 +19,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.adapters.ChannelsAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Channels;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -62,7 +63,7 @@ public class ChatForumFragment extends Fragment {
     }
 
     private void listenNewChannels() {
-        FireStore.db.collection("channels").addSnapshotListener(eventListener);
+        FireStore.db.collection(Constants.rootCollectionChannels).addSnapshotListener(eventListener);
     }
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {

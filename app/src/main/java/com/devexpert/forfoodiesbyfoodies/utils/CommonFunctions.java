@@ -16,7 +16,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -58,8 +57,7 @@ public class CommonFunctions {
                                     Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
                                     result.addOnSuccessListener(uri -> {
                                         String imageUrl = uri.toString();
-
-                                        System.out.println("image Upload" + imageUrl);
+                                        CommonFunctions.customLog("Image Upload" + imageUrl);
                                         progressDialog.dismiss();
                                         imageUploadResult.onUploadSuccess(imageUrl);
                                     });
@@ -71,7 +69,7 @@ public class CommonFunctions {
                             progressDialog.dismiss();
                             imageUploadResult.onUploadFailure();
 
-                            Toast.makeText(context, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            CommonFunctions.showToast("Failed " + e.getMessage(),context);
                         })
                         .addOnProgressListener(taskSnapshot -> {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
@@ -80,7 +78,7 @@ public class CommonFunctions {
                         });
             }
         } catch (Exception e) {
-            System.out.println("error while uplaoding image" + e.getMessage());
+            CommonFunctions.customLog("Error while uploading image" + e.getMessage());
         }
 
     }

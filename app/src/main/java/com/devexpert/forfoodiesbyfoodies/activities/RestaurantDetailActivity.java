@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,8 +13,9 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.AddReviewDialogue;
+import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -35,12 +35,12 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
         initView();
 
-        YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+        CustomSharedPreference yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
 
-        String userId = yourPreference.getData("userId");
+        String userId = yourPreference.getData(Constants.userId);
         Intent intent = getIntent();
-        from = intent.getExtras().getString("from");
-        Restaurant restaurant = (Restaurant) intent.getSerializableExtra("details");
+        from = intent.getExtras().getString(Constants.from);
+        Restaurant restaurant = (Restaurant) intent.getSerializableExtra(Constants.details);
 
 
         FireStore.getData(userId, users -> {
@@ -52,7 +52,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                         reviewDialogue.show();
                     });
                 } else {
-                    Log.d("Error: ", "Only critic is allowed to add review");
+                    CommonFunctions.customLog("Alert: Only critic is allowed to add review");
                 }
             } else {
                 btnAddReview.setOnClickListener(view -> {
@@ -80,9 +80,9 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         });
         btnReview.setOnClickListener(view -> {
             Intent intent2 = new Intent(getApplicationContext(), ReviewsActivity.class);
-            intent2.putExtra("details", restaurant);
-            intent2.putExtra("from", from);
-            intent2.putExtra("user", user);
+            intent2.putExtra(Constants.details, restaurant);
+            intent2.putExtra(Constants.from, from);
+            intent2.putExtra(Constants.user, user);
             startActivity(intent2);
         });
     }

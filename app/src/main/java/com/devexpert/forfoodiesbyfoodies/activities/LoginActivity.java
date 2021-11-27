@@ -1,20 +1,16 @@
 package com.devexpert.forfoodiesbyfoodies.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.devexpert.forfoodiesbyfoodies.R;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,21 +24,24 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private TextView signUpTextView, forgetPasswordTextView;
-    private final YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
+    private CustomSharedPreference yourPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        yourPreference = CustomSharedPreference.getInstance(getApplicationContext());
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        loginButton.setOnClickListener(view -> login());
+        loginButton.setOnClickListener(view -> login());        //call login function when click ob login button
+        //navigate to signUp activity
         signUpTextView.setOnClickListener(view -> startActivity(new Intent(this, SignUpActivity.class)));
 
     }
 
+    //initialize view
     void initView() {
         emailField = findViewById(R.id.emailField_id);
         passwordField = findViewById(R.id.passwordField_id);
@@ -52,12 +51,13 @@ public class LoginActivity extends AppCompatActivity {
         forgetPasswordTextView = findViewById(R.id.forgetPasswordTextView_id);
     }
 
+    //Function for login
     void login() {
         CommonFunctions.hideKeyboard(this);
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
 
-
+        //check validity before login
         if (email.isEmpty() || password.isEmpty()) {
             CommonFunctions.showToast("Please fill the data properly.", getApplicationContext());
         } else {
@@ -71,10 +71,10 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(LoginActivity.this, task -> {
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
-                                    Log.d("Login Error:", task.getException().getMessage());
+                                    CommonFunctions.customLog("Login Error: " + task.getException().getMessage());
                                     CommonFunctions.showToast("Something went wrong.", getApplicationContext());
                                 } else {
-                                    yourPreference.saveData("userId", task.getResult().getUser().getUid());
+                                    yourPreference.saveData(Constants.userId, task.getResult().getUser().getUid());
                                     Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                                     startActivity(intent);
                                     finish();

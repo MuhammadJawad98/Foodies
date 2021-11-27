@@ -43,9 +43,12 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_street_food);
         initView();
+        //get uuid of user from firebase
         userId = FireStore.getCurrentUserUUid();
-        System.out.println("userId::: " + userId);
+        CommonFunctions.customLog("UserId: "+userId);
         btnSubmit.setOnClickListener(view -> submitData());
+
+        //click on image view to select image for street food from gallery
         imageView.setOnClickListener(view -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -77,6 +80,8 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        //radio group for vege and non vege food type
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.radioVege:
@@ -91,6 +96,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
 
     }
 
+    //initializing view
     void initView() {
         imageView = findViewById(R.id.image_id);
         edtName = findViewById(R.id.edtName_id);
@@ -100,6 +106,8 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.submitStreetFooBtn_id);
     }
 
+    //when click submit button it check the data validity and already exist in db or not
+    //if not then add it to firebase
     void submitData() {
         String name = edtName.getText().toString();
         String description = edtDescription.getText().toString();
@@ -123,7 +131,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
             return;
         }
 
-        FireStore.db.collection("street_food").whereEqualTo("name", name).addSnapshotListener((value, error) -> {
+        FireStore.db.collection(Constants.rootCollectionStreetFood).whereEqualTo(Constants.name, name).addSnapshotListener((value, error) -> {
             if (value.getDocuments().size() > 0) {
                 CommonFunctions.showToast("Already exist", getApplicationContext());
             } else {
@@ -133,6 +141,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         });
     }
 
+    //return you the selected image data
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,6 +165,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
         }
     }
 
+    //Function for uploading image to firebase storage
     private void uploadImage(String name, String description, String location) {
 
         CommonFunctions.uploadImage(imagePath, getApplicationContext(), imageUri, new ImageUploadResult() {

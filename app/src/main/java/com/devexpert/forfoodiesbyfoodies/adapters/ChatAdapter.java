@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.models.Chat;
@@ -15,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter {
+import static androidx.recyclerview.widget.RecyclerView.*;
+
+public class ChatAdapter extends Adapter {
 
     private final List<Chat> chatList;
     private final String userId;
@@ -30,7 +31,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
             view = LayoutInflater.from(parent.getContext())
@@ -47,7 +48,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Chat chat = chatList.get(position);
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:
@@ -80,7 +81,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
 }
 
-class SentMessageHolder extends RecyclerView.ViewHolder {
+class SentMessageHolder extends ViewHolder {
     TextView messageText, timeText, tvUserName;
 
     SentMessageHolder(View itemView) {
@@ -100,7 +101,7 @@ class SentMessageHolder extends RecyclerView.ViewHolder {
     }
 }
 
-class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+class ReceivedMessageHolder extends ViewHolder {
     TextView messageText, timeText, nameText;
 
 
