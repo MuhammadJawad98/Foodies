@@ -20,26 +20,29 @@ import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFoodRecyclerviewAdapter.ViewHolder> {
 
-    private List<StreetFood> mData;
-    private LayoutInflater mInflater;
-    private Context context;
-    private ReviewRecyclerviewAdapter.ItemClickListener mClickListener;
-private User user;
-    public StreetFoodRecyclerviewAdapter(Context context, List<StreetFood> data,User user) {
+    private final List<StreetFood> mData;
+    private final LayoutInflater mInflater;
+    private final Context context;
+    private final User user;
+
+    public StreetFoodRecyclerviewAdapter(Context context, List<StreetFood> data, User user) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = data;
-        this.user=user;
+        this.user = user;
     }
 
+    @NotNull
     @Override
-    public StreetFoodRecyclerviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StreetFoodRecyclerviewAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.resturant_item, parent, false);
-        return new StreetFoodRecyclerviewAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -54,7 +57,7 @@ private User user;
             intent.putExtra("from", Constants.streetFoodActivity);
             intent.putExtra("details",
                     new Restaurant(streetFood.getPicture(), streetFood.getDescription(), streetFood.getName(), streetFood.getId()));
-            intent.putExtra("userData",user);
+            intent.putExtra("userData", user);
             context.startActivity(intent);
         });
 
@@ -68,7 +71,7 @@ private User user;
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView streetFoodTextView;
         ImageView streetFoodImageView;
         Button streetFoodViewButton;
@@ -79,27 +82,8 @@ private User user;
             streetFoodTextView.setGravity(Gravity.CENTER);
             streetFoodImageView = itemView.findViewById(R.id.restaurantImageView_id);
             streetFoodViewButton = itemView.findViewById(R.id.btnRestaurantView_id);
-            itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-        }
-    }
 
-    // convenience method for getting data at click position
-    StreetFood getItem(int id) {
-        return mData.get(id);
-    }
-
-    // allows clicks events to be caught
-    public void setClickListener(ReviewRecyclerviewAdapter.ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

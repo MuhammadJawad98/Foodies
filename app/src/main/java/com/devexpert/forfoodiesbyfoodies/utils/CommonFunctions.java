@@ -1,9 +1,11 @@
 package com.devexpert.forfoodiesbyfoodies.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -83,16 +85,17 @@ public class CommonFunctions {
 
     }
 
-//    public static  String CurrentTime(){
-//        return java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-//    }
-    public static Date CurrentDateTime(){
-        Date date = new Date();
-        return date;
+    public static Date CurrentDateTime() {
+        return new Date();
     }
-    public static  String convertTime(Date date){
-        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm a");
-        String time = dateFormat.format(date);
-        return time;
+
+    public static String convertTime(Date date) {
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        return dateFormat.format(date);
+    }
+
+    public static void customLog(String message) {
+        Log.d("FFBF Log: ", message);
     }
 }

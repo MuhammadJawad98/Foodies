@@ -8,29 +8,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.adapters.ChatAdapter;
-import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
-import com.devexpert.forfoodiesbyfoodies.interfaces.OnResult;
 import com.devexpert.forfoodiesbyfoodies.models.Chat;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,11 +33,9 @@ public class ChatActivity extends AppCompatActivity {
     private String documentId;
     private User userData;
     private EditText editText;
-    private Button btnSendMessage;
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
-    private List<Chat> chatMessages = new ArrayList<>();
-    private String userId;
+    private final List<Chat> chatMessages = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -51,13 +43,13 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         YourPreference yourPreference = YourPreference.getInstance(getApplicationContext());
-        userId = yourPreference.getData("userId");
+        String userId = yourPreference.getData("userId");
 
         editText = findViewById(R.id.edt_message_id);
-        btnSendMessage = findViewById(R.id.btnSend_id);
+        Button btnSendMessage = findViewById(R.id.btnSend_id);
         recyclerView = findViewById(R.id.chat_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        adapter = new ChatAdapter(getApplicationContext(), chatMessages, userId);
+        adapter = new ChatAdapter(chatMessages, userId);
         recyclerView.setAdapter(adapter);
 
 

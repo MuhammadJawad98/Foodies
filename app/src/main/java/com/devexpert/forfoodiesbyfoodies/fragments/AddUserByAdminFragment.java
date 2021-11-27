@@ -56,12 +56,10 @@ public class AddUserByAdminFragment extends Fragment {
                     isCritic = false;
                     break;
             }
-            System.out.println("isCritics: " + isCritic + " isAdmin: " + isAdmin);
+            CommonFunctions.customLog("isCritics: " + isCritic + " isAdmin: " + isAdmin);
         });
         btnSubmit.setOnClickListener(view1 -> createAnAccount());
-        /*
 
-         */
         return view;
     }
 

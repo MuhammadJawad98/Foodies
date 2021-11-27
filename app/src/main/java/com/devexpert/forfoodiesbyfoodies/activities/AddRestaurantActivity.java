@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,15 +45,14 @@ public class AddRestaurantActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
                         Intent data = result.getData();
                         if (data == null) {
-                            //error
                             return;
                         }
                         try {
                             Uri uri = data.getData();
-                            System.out.println(data.getData() + "::::::::::::" + uri.getPath());
+                            CommonFunctions.customLog(data.getData().toString());
+                            CommonFunctions.customLog(uri.getPath());
                             final InputStream imageStream = getContentResolver().openInputStream(uri);
                             final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                             imageView.setImageBitmap(selectedImage);

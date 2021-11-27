@@ -68,19 +68,16 @@ public class LoginActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     //authenticate user
                     auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    progressBar.setVisibility(View.GONE);
-                                    if (!task.isSuccessful()) {
-                                        Log.d("Login Error:", task.getException().getMessage());
-                                        CommonFunctions.showToast("Something went wrong.", getApplicationContext());
-                                    } else {
-                                        yourPreference.saveData("userId", task.getResult().getUser().getUid());
-                                        Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
+                            .addOnCompleteListener(LoginActivity.this, task -> {
+                                progressBar.setVisibility(View.GONE);
+                                if (!task.isSuccessful()) {
+                                    Log.d("Login Error:", task.getException().getMessage());
+                                    CommonFunctions.showToast("Something went wrong.", getApplicationContext());
+                                } else {
+                                    yourPreference.saveData("userId", task.getResult().getUser().getUid());
+                                    Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             });
 

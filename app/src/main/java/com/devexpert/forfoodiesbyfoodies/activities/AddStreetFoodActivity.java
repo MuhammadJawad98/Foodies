@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.interfaces.ImageUploadResult;
@@ -66,7 +65,8 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                         }
                         try {
                             Uri uri = data.getData();
-                            System.out.println(data.getData() + "::::::::::::" + uri.getPath());
+                            CommonFunctions.customLog(data.getData().toString());
+                            CommonFunctions.customLog(uri.getPath());
                             final InputStream imageStream = getContentResolver().openInputStream(uri);
                             final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                             imageView.setImageBitmap(selectedImage);
@@ -86,7 +86,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
                     foodType = Constants.no_vegetarian;
                     break;
             }
-            System.out.println("foodType: " + foodType);
+            CommonFunctions.customLog("Food type: " + foodType);
         });
 
     }
@@ -125,8 +125,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
 
         FireStore.db.collection("street_food").whereEqualTo("name", name).addSnapshotListener((value, error) -> {
             if (value.getDocuments().size() > 0) {
-                Toast.makeText(getApplicationContext(), "Already exist", Toast.LENGTH_SHORT).show();
-
+                CommonFunctions.showToast("Already exist", getApplicationContext());
             } else {
                 uploadImage(name, description, location);
 
@@ -144,7 +143,8 @@ public class AddStreetFoodActivity extends AppCompatActivity {
             }
             try {
                 Uri uri = data.getData();
-                System.out.println(data.getData() + "::::::::::::" + uri.getPath());
+                CommonFunctions.customLog(data.getData().toString());
+                CommonFunctions.customLog(uri.getPath());
                 final InputStream imageStream = getContentResolver().openInputStream(uri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageView.setImageBitmap(selectedImage);
@@ -170,8 +170,7 @@ public class AddStreetFoodActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure() {
-                        Toast.makeText(getApplicationContext(), "Error while uploading data", Toast.LENGTH_SHORT).show();
-
+                        CommonFunctions.showToast("Error while uploading data", getApplicationContext());
                     }
                 });
             }

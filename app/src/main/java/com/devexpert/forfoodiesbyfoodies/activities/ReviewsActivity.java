@@ -6,22 +6,20 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
-import com.devexpert.forfoodiesbyfoodies.adapters.ChatAdapter;
 import com.devexpert.forfoodiesbyfoodies.adapters.ReviewRecyclerviewAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
-import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.google.firebase.firestore.DocumentChange;
@@ -30,7 +28,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ReviewsActivity extends AppCompatActivity implements ReviewRecyclerviewAdapter.ItemClickListener {
@@ -40,10 +37,8 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
     private RatingBar ratingBar;
     private Restaurant restaurant;
     RecyclerView recyclerView;
-    List<Review> reviewList = new ArrayList();
-    private String from;
+    private final List<Review> reviewList = new ArrayList();
     String rootCollection;
-    private User user;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -56,8 +51,8 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
         Intent intent = getIntent();
         restaurant = (Restaurant) intent.getSerializableExtra("details");
-        from = intent.getExtras().getString("from");
-        user = (User) intent.getSerializableExtra("user");
+        String from = intent.getExtras().getString("from");
+        User user = (User) intent.getSerializableExtra("user");
 
         if (from.equals(Constants.restaurantDetailActivity)) {
             rootCollection = Constants.rootCollectionRestaurant;
@@ -149,6 +144,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
     };
 
+    @SuppressLint("DefaultLocale")
     public void updateRating() {
         float rating = 0;
         if (reviewList.size() != 0) {
@@ -157,8 +153,9 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
             }
             rating = rating / reviewList.size();
         }
-        ratingTv.setText(String.format("%.1f", rating) + "");
-        ratingPeoplesTv.setText("From " + reviewList.size() + " people");
+        ratingTv.setText(String.format("%.1f", rating));
+        String from="From ";
+        ratingPeoplesTv.setText(from.concat(reviewList.size() + " people"));
         ratingBar.setRating(rating);
     }
 

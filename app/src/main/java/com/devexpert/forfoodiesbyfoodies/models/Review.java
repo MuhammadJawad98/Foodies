@@ -1,7 +1,6 @@
 package com.devexpert.forfoodiesbyfoodies.models;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Review implements Serializable {
     private String name;
@@ -13,7 +12,6 @@ public class Review implements Serializable {
     private String email;
     private double rating;
     private double reviewRating;
-//    private List reviewRatingList;
 
 
     public Review(String name, String id, String userId, String comment, String profileUrl, double rating, double reviewRating) {
@@ -37,29 +35,6 @@ public class Review implements Serializable {
         this.rating = rating;
         this.reviewRating = reviewRating;
     }
-
-
-//    public Review(String name, String id, String userId, String comment, String profileUrl, double rating, List reviewRatingList) {
-//        this.name = name;
-//        this.id = id;
-//        this.userId = userId;
-//        this.comment = comment;
-//        this.profileUrl = profileUrl;
-//        this.rating = rating;
-//        this.reviewRatingList = reviewRatingList;
-//    }
-
-//    public Review(String name, String lastName, String id, String userId, String comment, String profileUrl, String email, double rating, List reviewRatingList) {
-//        this.name = name;
-//        this.lastName = lastName;
-//        this.id = id;
-//        this.userId = userId;
-//        this.comment = comment;
-//        this.profileUrl = profileUrl;
-//        this.email = email;
-//        this.rating = rating;
-//        this.reviewRatingList = reviewRatingList;
-//    }
 
     public String getEmail() {
         return email;
@@ -133,11 +108,4 @@ public class Review implements Serializable {
         this.reviewRating = reviewRating;
     }
 
-    //    public List getReviewRatingList() {
-//        return reviewRatingList;
-//    }
-//
-//    public void setReviewRatingList(List reviewRatingList) {
-//        this.reviewRatingList = reviewRatingList;
-//    }
 }

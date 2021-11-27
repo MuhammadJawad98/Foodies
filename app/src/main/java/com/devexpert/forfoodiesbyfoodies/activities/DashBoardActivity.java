@@ -8,15 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.fragments.AddUserByAdminFragment;
@@ -24,23 +20,17 @@ import com.devexpert.forfoodiesbyfoodies.fragments.ChatForumFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.ProfileFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.RestaurantsFragment;
 import com.devexpert.forfoodiesbyfoodies.fragments.StreetFoodFragment;
-import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
-import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Date;
 
 public class DashBoardActivity extends AppCompatActivity {
     DrawerLayout dLayout;
     TextView textViewName;
     ImageView imageView;
-    String name = "";
     private User userData;
     private Menu menu;
 
@@ -60,10 +50,10 @@ public class DashBoardActivity extends AppCompatActivity {
 //                name=user.getFirstName();
 
             if (user.getFirstName().isEmpty()) {
-                textViewName.setText("User name");
+                textViewName.setText(R.string.user_name);
 
             } else {
-                textViewName.setText(user.getFirstName() + " " + user.getLastName());
+                textViewName.setText(user.getFirstName().concat(" ").concat(user.getLastName()));
                 Picasso.get().load(user.getImageUrl()).fit().centerCrop().
                         placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.error_image).into(imageView);
@@ -101,7 +91,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
         // implement setNavigationItemSelectedListener event on NavigationView
         navView.setNavigationItemSelectedListener(menuItem -> {
-            Fragment frag = null; // create a Fragment Object
+            Fragment frag ; // create a Fragment Object
             int itemId = menuItem.getItemId(); // get selected menu item's id
             // check selected menu item's id and replace a Fragment Accordingly
             if (itemId == R.id.restaurantFragment_id) {

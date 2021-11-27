@@ -16,6 +16,7 @@ import com.devexpert.forfoodiesbyfoodies.activities.OtherUserProfileActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
+import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -63,7 +64,6 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
                 placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image).into(holder.imageView);
         holder.ratingBar.setRating((float) review.getReviewRating());
-        System.out.println(userId + "?????" + from + review.getUserId() + userId.equals(review.getUserId()));
         if (from.equals(Constants.restaurantDetailActivity)) {
             holder.imageViewDelete.setVisibility(View.GONE);
         } else {
@@ -76,7 +76,7 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
             try {
                 FireStore.db.collection("street_food").document(restaurantId).collection("reviews").document(review.getId()).delete();
             } catch (Exception e) {
-                System.out.println("<><><><><><><>" + e.getMessage());
+                CommonFunctions.customLog(e.getMessage());
             }
         });
         holder.imageView.setOnClickListener(view -> {

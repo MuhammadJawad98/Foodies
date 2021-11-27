@@ -13,26 +13,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.ChatActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Channels;
-import com.devexpert.forfoodiesbyfoodies.models.User;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHolder> {
 
-    private List<Channels> channelList;
-    private LayoutInflater mInflater;
-    private Context context;
+    private final List<Channels> channelList;
+    private final LayoutInflater mInflater;
+    private final Context context;
 
 
-    public ChannelsAdapter(Context context, List channelList) {
+    public ChannelsAdapter(Context context, List<Channels> channelList) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.channelList = channelList;
 
     }
 
+    @NotNull
     @Override
-    public ChannelsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChannelsAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.channel_items, parent, false);
         return new ChannelsAdapter.ViewHolder(view);
     }
@@ -40,7 +42,7 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ChannelsAdapter.ViewHolder holder, int position) {
         Channels channels = channelList.get(position);
-        holder.textView.setText("#"+channels.getTopic());
+        holder.textView.setText("#".concat(channels.getTopic()));
         holder.linearLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("docId", channels.getId());
@@ -67,10 +69,5 @@ public class ChannelsAdapter extends RecyclerView.Adapter<ChannelsAdapter.ViewHo
         }
 
     }
-
-    Channels getItem(int id) {
-        return channelList.get(id);
-    }
-
 
 }

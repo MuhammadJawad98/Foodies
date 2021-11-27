@@ -11,14 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
-import com.devexpert.forfoodiesbyfoodies.interfaces.FirebaseUserDataResult;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.AddReviewDialogue;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
-import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.squareup.picasso.Picasso;
 
 public class RestaurantDetailActivity extends AppCompatActivity {
