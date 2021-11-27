@@ -21,32 +21,49 @@
             android:textColor="@color/black"
             android:textSize="50sp" />
 
-        <EditText
-            android:id="@+id/emailField_id"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/email"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
 
-        <EditText
-            android:id="@+id/passwordField_id"
+            <EditText
+                android:id="@+id/emailField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/email"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/password"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:id="@+id/passwordField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/password"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:minHeight="48dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
+            android:id="@+id/forgetPasswordTextView_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="end"
-            android:id="@+id/forgetPasswordTextView_id"
             android:text="@string/forget_password"
             android:textColor="@color/teal_200" />
 
@@ -67,11 +84,11 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/signUpTextView_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:id="@+id/signUpTextView_id"
             android:text="@string/create_a_new_account"
             android:textColor="@color/teal_200" />
     </LinearLayout>

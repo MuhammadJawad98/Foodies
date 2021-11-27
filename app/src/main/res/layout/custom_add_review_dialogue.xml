@@ -25,6 +25,7 @@
         android:progressBackgroundTint="@color/grey"
         android:progressTint="@color/golden" />
 
+
     <EditText
         android:id="@+id/edt_review_id"
         android:layout_width="match_parent"
@@ -32,6 +33,7 @@
         android:autofillHints=""
         android:hint="@string/add_review"
         android:inputType="text" />
+
 
     <LinearLayout
         android:layout_width="wrap_content"

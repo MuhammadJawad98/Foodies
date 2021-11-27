@@ -17,33 +17,54 @@
         app:civ_border_color="#FF000000"
         app:civ_border_width="0.5dp" />
 
-    <EditText
-        android:id="@+id/nameEditText_id"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:focusable="false"
-        android:hint="@string/firstName" />
+        android:layout_gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/lastNameEditText_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:autofillHints=""
-        android:focusable="false"
-        android:hint="@string/lastName"
-        android:inputType="text" />
+        <EditText
+            android:id="@+id/nameEditText_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:focusable="false"
+            android:hint="@string/firstName" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/emailEditText_id"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:autofillHints=""
-        android:focusable="false"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress" />
+        android:layout_gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/lastNameEditText_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:autofillHints=""
+            android:focusable="false"
+            android:hint="@string/lastName"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/emailEditText_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:autofillHints=""
+            android:focusable="false"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <TextView

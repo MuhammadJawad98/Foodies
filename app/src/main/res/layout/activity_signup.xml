@@ -21,45 +21,75 @@
             android:textColor="@color/black"
             android:textSize="50sp" />
 
-        <EditText
-            android:id="@+id/firstNameField_id"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/firstName"
-            android:hint="@string/firstName"
-            android:inputType="text"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
+            <EditText
+                android:id="@+id/firstNameField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/firstName"
+                android:hint="@string/firstName"
+                android:inputType="text"
+                android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/lastNameField_id"
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/lastName"
-            android:hint="@string/lastName"
-            android:inputType="text"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
+            <EditText
+                android:id="@+id/lastNameField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/lastName"
+                android:hint="@string/lastName"
+                android:inputType="text"
+                android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/emailField_id"
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/email"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
 
-        <EditText
-            android:id="@+id/passwordField_id"
+            <EditText
+                android:id="@+id/emailField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/email"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/password"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:minHeight="48dp" />
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:id="@+id/passwordField_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/password"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:minHeight="48dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
         <ProgressBar
             android:id="@+id/progressBar_id"
             android:layout_width="30dp"
