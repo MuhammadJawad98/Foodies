@@ -11,27 +11,21 @@ import android.widget.RatingBar;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 
-public class CustomDialogClass extends Dialog implements
-        android.view.View.OnClickListener {
+public class CustomDialogClass extends Dialog implements android.view.View.OnClickListener {
 
-    public Activity activity;
-    public Dialog dialog;
-    public Button yes, no;
-    public RatingBar ratingBar;
-    String reviewDocId;
-    String restaurantId;
-    float ratingValue;
+    private final Activity activity;
+    private final String reviewDocId;
+    private final String restaurantId;
+    private float ratingValue;
+    private final String rootCollection;
 
-    public CustomDialogClass(Activity a) {
-        super(a);
-        this.activity = a;
-    }
 
-    public CustomDialogClass(Activity activity, String id, String restaurantId) {
+    public CustomDialogClass(Activity activity, String id, String restaurantId, String rootCollection) {
         super(activity);
         this.activity = activity;
         this.reviewDocId = id;
         this.restaurantId = restaurantId;
+        this.rootCollection = rootCollection;
     }
 
     @Override
@@ -39,13 +33,10 @@ public class CustomDialogClass extends Dialog implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.custom_dialog);
-        yes = findViewById(R.id.btn_yes);
-        no = findViewById(R.id.btn_no);
-        ratingBar = findViewById(R.id.ratingBar);
-        ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
-            System.out.println("rating value ====>>> " + v);
-            ratingValue = v;
-        });
+        Button yes = findViewById(R.id.btn_yes);
+        Button no = findViewById(R.id.btn_no);
+        RatingBar ratingBar1 = findViewById(R.id.ratingBar);
+        ratingBar1.setOnRatingBarChangeListener((ratingBar, v, b) -> ratingValue = v);
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
 
@@ -56,11 +47,10 @@ public class CustomDialogClass extends Dialog implements
         switch (v.getId()) {
             case R.id.btn_yes:
                 //call fireStore add review rating function
-             if(ratingValue>0){
-                 FireStore.addRating(restaurantId, reviewDocId, ratingValue, activity.getApplicationContext());
-                 dismiss();
-             }
-//                activity.finish();
+                if (ratingValue > 0) {
+                    FireStore.addRating(rootCollection, restaurantId, reviewDocId, ratingValue, activity.getApplicationContext());
+                    dismiss();
+                }
                 break;
             case R.id.btn_no:
                 dismiss();

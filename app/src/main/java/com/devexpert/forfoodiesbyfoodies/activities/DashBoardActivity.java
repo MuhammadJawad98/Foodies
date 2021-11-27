@@ -109,7 +109,7 @@ public class DashBoardActivity extends AppCompatActivity {
             } else if (itemId == R.id.profileFragment_id) {
                 frag = new ProfileFragment();
             } else if (itemId == R.id.streetFoodFragment_id) {
-                frag = new StreetFoodFragment();
+                frag = new StreetFoodFragment(userData);
             } else if (itemId == R.id.addCritics_id) {
                 frag = new AddUserByAdminFragment();
             } else if (itemId == R.id.channelFragment_id) {

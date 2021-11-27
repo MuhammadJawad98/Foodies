@@ -1,7 +1,6 @@
 package com.devexpert.forfoodiesbyfoodies.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -32,8 +31,7 @@ import java.util.List;
 public class ChatForumFragment extends Fragment {
     private RecyclerView recyclerView;
     private ChannelsAdapter adapter;
-    private List channelsList = new ArrayList<>();
-    private FloatingActionButton actionButton;
+    private final List<Channels> channelsList = new ArrayList<>();
 
 
     public ChatForumFragment() {
@@ -55,16 +53,11 @@ public class ChatForumFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         adapter = new ChannelsAdapter(getContext(), channelsList);
         recyclerView.setAdapter(adapter);
-        actionButton = view.findViewById(R.id.fab_addChannels);
+        FloatingActionButton actionButton = view.findViewById(R.id.fab_addChannels);
         listenNewChannels();
 
 
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialogue();
-            }
-        });
+        actionButton.setOnClickListener(view1 -> openDialogue());
         return view;
     }
 
@@ -100,18 +93,14 @@ public class ChatForumFragment extends Fragment {
         final EditText taskEditText = new EditText(getContext());
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle("Add new topic!")
-//                .setMessage("Anything you want to discuss with other people?")
                 .setView(taskEditText)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String topic = taskEditText.getText().toString().trim();
+                .setPositiveButton("Add", (dialog1, which) -> {
+                    String topic = taskEditText.getText().toString().trim();
 
-                        if(topic.isEmpty()){
-                            return;
-                        }
-                        FireStore.createNewTopic(topic);
+                    if(topic.isEmpty()){
+                        return;
                     }
+                    FireStore.createNewTopic(topic);
                 })
                 .setNegativeButton("Cancel", null)
                 .create();

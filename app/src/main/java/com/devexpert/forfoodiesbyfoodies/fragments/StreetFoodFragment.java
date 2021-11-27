@@ -1,4 +1,4 @@
-    package com.devexpert.forfoodiesbyfoodies.fragments;
+package com.devexpert.forfoodiesbyfoodies.fragments;
 
 import android.content.Intent;
 import android.os.Build;
@@ -17,27 +17,28 @@ import android.widget.ProgressBar;
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.AddStreetFoodActivity;
 import com.devexpert.forfoodiesbyfoodies.adapters.StreetFoodRecyclerviewAdapter;
-import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
+import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class StreetFoodFragment extends Fragment  {
-    //    private List<StreetFood> streetFoodList = new ArrayList<>();
+public class StreetFoodFragment extends Fragment {
     private StreetFoodRecyclerviewAdapter adapter;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-    private List<StreetFood> streetFoodList=new ArrayList<>();
+    private final List<StreetFood> streetFoodList = new ArrayList<>();
+    private final User userData;
 
-
-    public StreetFoodFragment() {
+    public StreetFoodFragment(User user) {
+        this.userData = user;
     }
 
     @Override
@@ -49,13 +50,12 @@ public class StreetFoodFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_street_food, container, false);
 
         progressBar = view.findViewById(R.id.progressbar_id);
         recyclerView = view.findViewById(R.id.streetFoodRecyclerview_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new StreetFoodRecyclerviewAdapter(getContext(), streetFoodList);
+        adapter = new StreetFoodRecyclerviewAdapter(getContext(), streetFoodList, userData);
         recyclerView.setAdapter(adapter);
         listenNewStreetFoodRestaurant();
 
@@ -69,7 +69,8 @@ public class StreetFoodFragment extends Fragment  {
     }
 
     private void listenNewStreetFoodRestaurant() {
-        FireStore.db.collection("street_food").addSnapshotListener(eventListener);
+        FireStore.db.collection("street_food").orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener(eventListener);
         progressBar.setVisibility(View.GONE);
 
     }
@@ -93,7 +94,6 @@ public class StreetFoodFragment extends Fragment  {
                     streetFoodList.add(streetFood);
                 }
             }
-//            Collections.sort(chatMessages, (obj1, obj2) -> obj1.getMessageId().compareTo(obj2.getMessageId()));
             if (count == 0) {
                 adapter.notifyDataSetChanged();
             } else {

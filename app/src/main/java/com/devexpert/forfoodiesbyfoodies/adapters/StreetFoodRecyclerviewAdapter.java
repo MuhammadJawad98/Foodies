@@ -16,6 +16,7 @@ import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.RestaurantDetailActivity;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.StreetFood;
+import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -27,11 +28,12 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
     private LayoutInflater mInflater;
     private Context context;
     private ReviewRecyclerviewAdapter.ItemClickListener mClickListener;
-
-    public StreetFoodRecyclerviewAdapter(Context context, List<StreetFood> data) {
+private User user;
+    public StreetFoodRecyclerviewAdapter(Context context, List<StreetFood> data,User user) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = data;
+        this.user=user;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class StreetFoodRecyclerviewAdapter extends RecyclerView.Adapter<StreetFo
             intent.putExtra("from", Constants.streetFoodActivity);
             intent.putExtra("details",
                     new Restaurant(streetFood.getPicture(), streetFood.getDescription(), streetFood.getName(), streetFood.getId()));
+            intent.putExtra("userData",user);
             context.startActivity(intent);
         });
 

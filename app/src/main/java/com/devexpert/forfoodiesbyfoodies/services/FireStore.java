@@ -137,14 +137,14 @@ public class FireStore {
 
     }
 
-    public static void addRating(String restaurantId, String reviewId, float rating, Context context) {
+    public static void addRating(String rootCollection, String restaurantId, String reviewId, float rating, Context context) {
         YourPreference yourPreference = YourPreference.getInstance(context);
         String userId = yourPreference.getData("userId");
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userId);
         data.put("rating", rating);
-        db.collection("restaurants").document(restaurantId).collection("reviews").document(reviewId).collection("rating").document().set(data).addOnSuccessListener(aVoid -> Log.d("TAG", "DocumentSnapshot successfully written!")).addOnFailureListener(e -> Log.w("TAG", "Error writing document", e));
-        rateReview(restaurantId, reviewId, rating);
+        db.collection(rootCollection).document(restaurantId).collection("reviews").document(reviewId).collection("rating").document().set(data).addOnSuccessListener(aVoid -> Log.d("TAG", "DocumentSnapshot successfully written!")).addOnFailureListener(e -> Log.w("TAG", "Error writing document", e));
+        rateReview(rootCollection, restaurantId, reviewId, rating);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -182,20 +182,27 @@ public class FireStore {
                 addOnFailureListener(e -> onResult.onFailure());
     }
 
-    public static void rateReview(String restaurantDocId, String reviewDocId, float rate) {
+    public static void rateReview(String rootCollection, String restaurantDocId, String reviewDocId, float rate) {
         try {
             DocumentReference snapshot =
-                    db.collection("restaurants").document(restaurantDocId).collection("reviews").document(reviewDocId);
+                    db.collection(rootCollection).document(restaurantDocId).collection("reviews").document(reviewDocId);
             snapshot.get().addOnCompleteListener(task -> {
-                double rating = Double.parseDouble(task.getResult().get("reviewRating").toString());
-                double total_rating = (rating + rate) / 2;
+                String reviewRating = task.getResult().get("reviewRating").toString();
                 Map<String, Object> data = new HashMap<>();
-                data.put("reviewRating", total_rating);
+
+                if (reviewRating != null) {
+                    double rating = Double.parseDouble(reviewRating);
+                    double total_rating = (rating + rate) / 2;
+                    data.put("reviewRating", total_rating);
+                } else {
+                    data.put("reviewRating", rate);
+                }
+
                 snapshot.update(data);
 
             });
         } catch (Exception e) {
-            System.out.println("error ratereview:::" + e.toString());
+            System.out.println("error rate review:::" + e.toString());
         }
     }
 

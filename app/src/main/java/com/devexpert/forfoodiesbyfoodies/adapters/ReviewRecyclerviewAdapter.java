@@ -33,14 +33,15 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
     private YourPreference yourPreference;
     private final String from;
     private final String restaurantId;
+    private final boolean isAdmin;
 
-    public ReviewRecyclerviewAdapter(Context context, List<Review> data, String from, String restaurantId) {
+    public ReviewRecyclerviewAdapter(Context context, List<Review> data, String from, String restaurantId, boolean isAdmin) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = data;
         this.from = from;
         this.restaurantId = restaurantId;
-
+        this.isAdmin = isAdmin;
     }
 
     @NotNull
@@ -66,7 +67,7 @@ public class ReviewRecyclerviewAdapter extends RecyclerView.Adapter<ReviewRecycl
         if (from.equals(Constants.restaurantDetailActivity)) {
             holder.imageViewDelete.setVisibility(View.GONE);
         } else {
-            if (userId.equals(review.getUserId())) {
+            if (userId.equals(review.getUserId()) || isAdmin) {
                 holder.imageViewDelete.setVisibility(View.VISIBLE);
             }
         }

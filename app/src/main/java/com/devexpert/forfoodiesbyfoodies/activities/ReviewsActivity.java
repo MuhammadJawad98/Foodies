@@ -15,10 +15,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.devexpert.forfoodiesbyfoodies.R;
+import com.devexpert.forfoodiesbyfoodies.adapters.ChatAdapter;
 import com.devexpert.forfoodiesbyfoodies.adapters.ReviewRecyclerviewAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.models.Review;
+import com.devexpert.forfoodiesbyfoodies.models.User;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
+import com.devexpert.forfoodiesbyfoodies.services.YourPreference;
 import com.devexpert.forfoodiesbyfoodies.utils.Constants;
 import com.devexpert.forfoodiesbyfoodies.utils.CustomDialogClass;
 import com.google.firebase.firestore.DocumentChange;
@@ -39,6 +42,9 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
     RecyclerView recyclerView;
     List<Review> reviewList = new ArrayList();
     private String from;
+    String rootCollection;
+    private User user;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -47,17 +53,19 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         setContentView(R.layout.activity_reviews);
         initView();
 
+
         Intent intent = getIntent();
         restaurant = (Restaurant) intent.getSerializableExtra("details");
         from = intent.getExtras().getString("from");
-        String rootCollection;
+        user = (User) intent.getSerializableExtra("user");
+
         if (from.equals(Constants.restaurantDetailActivity)) {
             rootCollection = Constants.rootCollectionRestaurant;
         } else {
             rootCollection = Constants.rootCollectionStreetFood;
 
         }
-        adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList, from, restaurant.getId());
+        adapter = new ReviewRecyclerviewAdapter(getApplicationContext(), reviewList, from, restaurant.getId(), user.isAdmin());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
         listenNewReview(rootCollection, restaurant.getId());
@@ -67,7 +75,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
 
     @Override
     public void onItemClick(View view, int position) {
-        CustomDialogClass cdd = new CustomDialogClass(this, reviewList.get(position).getId(), restaurant.getId());
+        CustomDialogClass cdd = new CustomDialogClass(this, reviewList.get(position).getId(), restaurant.getId(), rootCollection);
         cdd.show();
     }
 
@@ -104,11 +112,7 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
                     try {
 
                         String docID = documentChange.getDocument().getId();
-                        int index = IntStream.range(0, reviewList.size())
-                                .filter(i -> reviewList.get(i).getId().equals(docID))
-                                .findFirst()
-                                .orElse(-1);
-
+                        int index = getItemIndex(docID);
                         reviewList.set(index, getReviewObject(documentChange));
                         adapter.notifyItemChanged(index);
                     } catch (Exception e) {
@@ -122,11 +126,8 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
                     try {
 
                         String docID = documentChange.getDocument().getId();
-                        int index = IntStream.range(0, reviewList.size())
-                                .filter(i -> reviewList.get(i).getId().equals(docID))
-                                .findFirst()
-                                .orElse(-1);
-                        System.out.println(">>>>> deleted item" + index);
+                        System.out.println(">>>>> deleted item" + getItemIndex(docID));
+                        int index = getItemIndex(docID);
                         reviewList.remove(index);
                         adapter.notifyItemRemoved(index);
                         type = "REMOVED";
@@ -140,7 +141,6 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
                 if (count == 0) {
                     adapter.notifyDataSetChanged();
                 } else {
-                    System.out.println("???????????????????????????????????????????????????");
                     adapter.notifyItemRangeInserted(reviewList.size(), reviewList.size());
                 }
             }
@@ -171,5 +171,16 @@ public class ReviewsActivity extends AppCompatActivity implements ReviewRecycler
         double rating = Double.parseDouble(documentChange.getDocument().getData().get("rating").toString());
         double reviewRating = Double.parseDouble(documentChange.getDocument().getData().get("reviewRating").toString());
         return new Review(reviewUserName, reviewId, reviewUserId, reviewComment, profileUrl, rating, reviewRating);
+    }
+
+    private int getItemIndex(String docID) {
+        int index = -1;
+        for (int i = 0; i < reviewList.size(); i++) {
+            if (reviewList.get(i).getId().equals(docID)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 }

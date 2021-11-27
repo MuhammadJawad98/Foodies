@@ -17,7 +17,6 @@ public class AddReviewDialogue extends Dialog implements
         android.view.View.OnClickListener {
 
     public Activity activity;
-    public Dialog dialog;
     public Button btnYes, btnNo;
     public RatingBar ratingBar;
     public EditText edtReview;
@@ -26,10 +25,6 @@ public class AddReviewDialogue extends Dialog implements
     User user;
     String from;
 
-    public AddReviewDialogue(Activity a) {
-        super(a);
-        this.activity = a;
-    }
 
     public AddReviewDialogue(Activity activity, String id, User user, String from) {
         super(activity);
@@ -48,10 +43,7 @@ public class AddReviewDialogue extends Dialog implements
         btnNo = findViewById(R.id.btn_no);
         ratingBar = findViewById(R.id.ratingBar);
         edtReview = findViewById(R.id.edt_review_id);
-        ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
-            System.out.println("rating value ====>>> " + v);
-            ratingValue = v;
-        });
+        ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> ratingValue = v);
         btnYes.setOnClickListener(this);
         btnNo.setOnClickListener(this);
 
@@ -59,19 +51,14 @@ public class AddReviewDialogue extends Dialog implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_yes:
-                String review = edtReview.getText().toString().trim();
-                if (from.equals(Constants.restaurantDetailActivity)) {
-                    FireStore.addRestaurantReview(Constants.rootCollectionRestaurant, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
-                } else {
-                    FireStore.addRestaurantReview(Constants.rootCollectionStreetFood, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
-                }
-                dismiss();
-                break;
-            default:
-                dismiss();
-                break;
+        if (v.getId() == R.id.btn_yes) {
+            String review = edtReview.getText().toString().trim();
+            if (from.equals(Constants.restaurantDetailActivity)) {
+                FireStore.addRestaurantReview(Constants.rootCollectionRestaurant, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
+            } else {
+                FireStore.addRestaurantReview(Constants.rootCollectionStreetFood, resDocId, review, user.getUserId(), user.getFirstName(), user.getImageUrl(), ratingValue);
+            }
         }
+        dismiss();
     }
 }

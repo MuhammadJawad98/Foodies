@@ -8,16 +8,13 @@ public class Constants {
     public static final String restaurantDetailActivity = "RestaurantDetailActivity";
     public static final String streetFoodActivity = "StreetFoodActivity";
 
+    //constants for db collection
     public static final String rootCollectionUsers = "users";
     public static final String rootCollectionRestaurant = "restaurants";
     public static final String rootCollectionStreetFood = "street_food";
 
 
-    public static String defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/for-foodies-by-foodies-8f29e.appspot.com/o/images%2Fvote_1.png?alt=media&token=ea127aa8-b2da-4d5c-8e4c-53ce4f0fba44" ;
-
-//constants for db
-
-
+    public static String defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/for-foodies-by-foodies-8f29e.appspot.com/o/images%2Fvote_1.png?alt=media&token=ea127aa8-b2da-4d5c-8e4c-53ce4f0fba44";
 
 
 }
