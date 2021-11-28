@@ -1,11 +1,9 @@
 package com.devexpert.forfoodiesbyfoodies.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,15 +11,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.devexpert.forfoodiesbyfoodies.R;
-import com.devexpert.forfoodiesbyfoodies.utils.CommonFunctions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
     private EditText inputEmail;
-
-    private Button btnReset, btnBack;
 
     private FirebaseAuth auth;
 
@@ -33,51 +26,40 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_forget_password);
 
-        inputEmail = (EditText) findViewById(R.id.email);
+        inputEmail = findViewById(R.id.email);
 
-        btnReset = (Button) findViewById(R.id.btn_reset_password);
+        Button btnReset = findViewById(R.id.btn_reset_password);
 
-        btnBack = (Button) findViewById(R.id.btn_back);
+        Button btnBack = findViewById(R.id.btn_back);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
         auth = FirebaseAuth.getInstance();
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        btnBack.setOnClickListener(v -> finish());
+
+        btnReset.setOnClickListener(v -> {
+
+            String email = inputEmail.getText().toString().trim();
+
+            if (TextUtils.isEmpty(email)) {
+                Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            progressBar.setVisibility(View.VISIBLE);
 
-                String email = inputEmail.getText().toString().trim();
+            auth.sendPasswordResetEmail(email)
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                        }
 
-                progressBar.setVisibility(View.VISIBLE);
-
-                auth.sendPasswordResetEmail(email)
-
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
-                                }
-
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
-            }
+                        progressBar.setVisibility(View.GONE);
+                    });
         });
     }
 
