@@ -59,5 +59,8 @@
     <string name="add_critic">Add Critic</string>
     <string name="for_adding_new_restaurant">For adding new restaurant</string>
     <string name="for_adding_street_food_stalls">For adding street food stalls</string>
+    <string name="lbl_forgot_password">Forget Password</string>
+    <string name="forgot_password_msg">To reset password, enter your emial, press the button anc check mail to follow instructions.</string>
+    <string name="btn_reset_password">Reset Password</string>
 
 </resources>

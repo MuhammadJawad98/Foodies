@@ -21,14 +21,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantRecyclerViewAdapter.ViewHolder> {
 
     private final List<Restaurant> restaurantList;
     private final LayoutInflater inflater;
     private final Context context;
 
     // data is passed into the constructor
-    public RecyclerViewAdapter(Context context, List<Restaurant> data) {
+    public RestaurantRecyclerViewAdapter(Context context, List<Restaurant> data) {
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         this.restaurantList = data;

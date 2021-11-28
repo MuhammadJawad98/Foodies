@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 
 import com.devexpert.forfoodiesbyfoodies.R;
 import com.devexpert.forfoodiesbyfoodies.activities.AddRestaurantActivity;
-import com.devexpert.forfoodiesbyfoodies.adapters.RecyclerViewAdapter;
+import com.devexpert.forfoodiesbyfoodies.adapters.RestaurantRecyclerViewAdapter;
 import com.devexpert.forfoodiesbyfoodies.models.Restaurant;
 import com.devexpert.forfoodiesbyfoodies.services.FireStore;
 import com.devexpert.forfoodiesbyfoodies.services.CustomSharedPreference;
@@ -30,7 +30,7 @@ import java.util.List;
 
 
 public class RestaurantsFragment extends Fragment {
-    private RecyclerViewAdapter adapter;
+    private RestaurantRecyclerViewAdapter adapter;
     private final List<Restaurant> restaurantList = new ArrayList<>();
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
@@ -70,7 +70,7 @@ public class RestaurantsFragment extends Fragment {
         fab = view.findViewById(R.id.fab);
         recyclerView = view.findViewById(R.id.restaurantRecyclerview_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RecyclerViewAdapter(getContext(), restaurantList);
+        adapter = new RestaurantRecyclerViewAdapter(getContext(), restaurantList);
         recyclerView.setAdapter(adapter);
 
         return view;

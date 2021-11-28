@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> login());        //call login function when click ob login button
         //navigate to signUp activity
         signUpTextView.setOnClickListener(view -> startActivity(new Intent(this, SignUpActivity.class)));
-
+        forgetPasswordTextView.setOnClickListener(view-> startActivity(new Intent(this, ForgetPasswordActivity.class)));
     }
 
     //initialize view

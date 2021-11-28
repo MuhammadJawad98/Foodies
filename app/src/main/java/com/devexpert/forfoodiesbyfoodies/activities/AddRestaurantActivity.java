@@ -35,7 +35,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_restaurant);
         initView();
 
-        //when click on image view it open the gallery to select an image
+         // when click on image view it open the gallery to select an image
         imageView.setOnClickListener(view -> {
             Intent intent = new Intent();
             intent.setType("image/*");
