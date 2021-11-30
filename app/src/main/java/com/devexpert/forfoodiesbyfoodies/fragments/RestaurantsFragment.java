@@ -31,7 +31,7 @@ import java.util.List;
 
 public class RestaurantsFragment extends Fragment {
     private RestaurantRecyclerViewAdapter adapter;
-    private final List<Restaurant> restaurantList = new ArrayList<>();
+        private final List<Restaurant> restaurantList = new ArrayList<>();
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
